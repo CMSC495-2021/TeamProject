@@ -1,20 +1,12 @@
-from flask import Flask
-
-html = '''
-<html>
-<head>
-<title>Test Flask App </title>
-</head>
-<body> 
-<h1>This is a test application!!</h1>
-</body>
-</html>
-'''
+from flask import Flask, render_template
 
 application = app = Flask(__name__)
-app.add_url_rule('/', 'index', (lambda: html))
+
+
+@app.route('/', methods=["GET"])
+def index():
+    return render_template("index.html")
+
 
 if __name__ == '__main__':
-    app.debug = True
-    app.run()
-
+    app.run(debug=True)
