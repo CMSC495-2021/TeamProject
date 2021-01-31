@@ -1,12 +1,10 @@
 {% extends "layout.html" %}
 
-
-{% block title %} Block Title {% endblock %}
-
-{%block head%}
-Block Head...
+{% block side %}
 {% endblock %}
 
-{%block body%}
-    <h1>Test</h1>
+{% block main %}
+    <ul id="messages"></ul>
+    <label for="myMessage"></label><input type="text" id="myMessage">
+    <button id="sendbutton">Send</button>
 {% endblock %}
