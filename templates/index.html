@@ -1,10 +1,19 @@
 {% extends "layout.html" %}
 
 {% block side %}
+
+    <button id="someButton">This</button>
+    <button id="someOtherButton">Is</button>
+    <button id="anotherOne">A</button>
+    <button id="button2">Test</button>
+    <label for="textboxside"></label><input type="text" id="myMessage" onclick="THIS IS A TEST">
+
 {% endblock %}
 
 {% block main %}
     <ul id="messages"></ul>
+
+    <textarea id="chatWindow" name="chatWindow" rows="60" cols="75">Just a Test Area!</textarea>
     <label for="myMessage"></label><input type="text" id="myMessage">
     <button id="sendbutton">Send</button>
 {% endblock %}
