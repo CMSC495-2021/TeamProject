@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block register %}
+<div class="registerForm">
+    <h1>Register</h1>
+    <input type="text" placeholder="username" name="username"/>
+    <input type="text" placeholder="email@email.com" name="email">
+    <input type="password" placeholder="password" name="password">
+    <input type="password" placeholder="enter password again" name="verifyPassword">
+    <button name="registerButton">Submit</button>
+    <a href="login" title="Already Registered?">Already Registered?</a>
+</div>
+{% endblock %}
