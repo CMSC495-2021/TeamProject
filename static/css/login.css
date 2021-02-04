@@ -17,8 +17,21 @@
     background: #FF936C;
     overflow: hidden;
 
+}
+  .registerLink{
 
+    font-family: rocko;
+    font-size: 17px;
+    border: 2px solid black;
+    border-radius: 25px;
+    background: #EFC149;
 
+    margin-top: 10px;
+    height: 30px;
+    width: 150px;
 
+    text-align: center;
+    text-align: -webkit-center;
+    text-align: -moz-center;
 
 }
