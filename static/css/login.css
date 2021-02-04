@@ -1,6 +1,24 @@
+
+  @font-face {
+        font-family: rocko;
+    src: url('../font/rocko.ttf');
+    }
+
 .loginForm{
+
+    font-family: rocko;
     font-size: 16px;
-    padding: 16px;
-    border: 1px solid black;
+    padding: 10px;
+    border: 2px solid black;
     border-radius: 25px;
+
+    width: 300px;
+
+    background: mediumaquamarine;
+    overflow: hidden;
+
+
+
+
+
 }
