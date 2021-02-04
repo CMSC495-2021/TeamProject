@@ -3,15 +3,8 @@
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/side.css')}}">
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/main.css')}}">
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/body.css')}}">
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/login.css')}}">
 <div style="display: flex;">
-    <!-- Sidebar -->
-    <aside style="width: 30%;">
-
-        {% block side %}
-        {% endblock %}
-
-    </aside>
-
     <!-- Main -->
     <main style="
         /* Take the remaining width */
@@ -20,10 +13,8 @@
         /* Make it scrollable */
         overflow: auto;
     ">
-
-        {% block main %}
+        {% block login %}
         {% endblock %}
-
 
     </main>
 </div>
