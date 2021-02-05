@@ -69,6 +69,10 @@ def SubmitNewUser():
 
 if __name__ == '__main__':
     #app.run()
+    """
+        Use the following two lines to locally run the application with livereload (view changes as you make them)
+        You will also need to comment out the app.run()
+    """
     server = Server(app.wsgi_app)
     server.serve()
 
