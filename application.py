@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import boto3
 from numpy import random
+from livereload import Server
 from datetime import date
 
 aws_access_key_id = "ASIARSOHCYSCJG67Z3HC"
@@ -68,3 +69,12 @@ def SubmitNewUser():
 
 if __name__ == '__main__':
     app.run()
+    """
+    Use the following two lines to locally run the application with livereload (view changes as you make them)
+    You will also need to comment out the app.run()
+    
+    server = Server(app.wsgi_app)
+    server.serve()
+    """
+    
+

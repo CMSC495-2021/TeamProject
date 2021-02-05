@@ -1,37 +1,89 @@
-
-  @font-face {
-        font-family: rocko;
-    src: url('../font/rocko.ttf');
-    }
+@font-face {
+    font-family: rocko;
+src: url('../font/rocko.ttf');
+}
 
 .loginForm{
 
-    font-family: rocko;
     font-size: 19px;
-    padding: 10px;
-    border: 2px solid black;
+    border: 2px solid rgba(255, 255, 255, .25);
     border-radius: 25px;
-
-    width: 300px;
-
-    background: #FF936C;
-    overflow: hidden;
-
-}
-  .registerLink{
-
-    font-family: rocko;
-    font-size: 17px;
-    border: 2px solid black;
-    border-radius: 25px;
-    background: #EFC149;
-
-    margin-top: 10px;
-    height: 30px;
-    width: 150px;
-
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 55px 0;
+    height: -webkit-fill-available;
     text-align: center;
-    text-align: -webkit-center;
-    text-align: -moz-center;
+        
+}
 
+.registerLink{
+    padding-top: 15px;
+}
+
+.registerLink a{
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    padding: 7px;
+    margin: 5px;
+    background: #5f7cf9;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+h1{
+    font-size: 40px;
+    font-weight: 200;
+    color: white;
+    font-weight: bold;
+}
+
+.loginImg{
+    width: 20%;
+    display: block;
+    text-align: center;
+    margin: 0 auto;
+}
+
+input{
+    display: block;
+    appearance: none;
+    outline: 0;
+    border: 1px solid rgba(255, 255, 255, .25);
+    background-color: rgba(255, 255, 255, .25);
+    width: 250px;
+    border-radius: 3px;
+    padding: 10px 15px;
+    margin: 0 auto 10px auto;
+    display: block;
+    text-align: center;
+    font-size: 18px;
+    color: white;
+    font-weight: 300;
+    
+}
+
+input:focus{
+    background: white;
+    color: black;
+}
+
+::-webkit-input-placeholder {
+    font-family: 'Source Sans Pro', sans-serif;
+        color:    white;
+    font-weight: 300;
+}
+
+button{
+    background-color: white;
+    color: #7797dd;
+    border: 0;
+    padding: 10px 15px;
+    border-radius: 3px;
+    width: 282px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+svg{
+    fill: white;
 }

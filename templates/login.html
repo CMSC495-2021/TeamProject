@@ -1,18 +1,16 @@
 {% extends "layout.html" %}
 
 {% block login %}
+
 <div class="loginForm">
+    <svg class="loginImg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><style>.cls-1{fill:#5f7cf9;}.cls-2{fill:#4062ed;}.cls-3{fill:#8c9eff;}</style></defs><title/><g id="Locked"><path class="cls-1" d="M20,14H12a1,1,0,0,1-1-1V9A5,5,0,0,1,21,9v4A1,1,0,0,1,20,14Zm-7-2h6V9a3,3,0,0,0-6,0Z"/><path class="cls-2" d="M16,4V6a3,3,0,0,1,3,3v3H16v2h4a1,1,0,0,0,1-1V9A5,5,0,0,0,16,4Z"/><rect class="cls-3" height="16" rx="1" ry="1" width="18" x="7" y="12"/><path class="cls-1" d="M24,12H16V28h8a1,1,0,0,0,1-1V13A1,1,0,0,0,24,12Z"/><path class="cls-3" d="M18,21H14a1,1,0,0,1,0-2h4a1,1,0,0,1,0,2Z"/><path class="cls-1" d="M18,19H16v2h2a1,1,0,0,0,0-2Z"/></g></svg>
     <h1>Login</h1>
     <input type="text" placeholder="username" name="username"/>
     <input type="password" placeholder="password" name="password">
     <button name="loginButton">Login</button>
 
-    <div align="right">
-        <div class="registerLink">
-
-            <a href="register" title="New User?">New User?</a>
-
-        </div>
+    <div class="registerLink">
+        <a href="register" title="New User?">New User?</a>
     </div>
 </div>
 {% endblock %}

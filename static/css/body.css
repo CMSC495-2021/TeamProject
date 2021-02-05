@@ -1,4 +1,9 @@
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300);
 body{
-    color: black;
-    background-color: #416160;
+    background: #7797dd;
+    background: linear-gradient(to top, #7797dd 0.84%, #5fbefd);
+    font-family: 'Source Sans Pro', sans-serif;
+	color: white;
+	font-weight: 300;
 }
+
