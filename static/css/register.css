@@ -1,0 +1,40 @@
+
+  @font-face {
+        font-family: rocko;
+    src: url('../font/rocko.ttf');
+    }
+
+.registerForm{
+
+    font-family: rocko;
+    font-size: 19px;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 25px;
+
+    width: 400px;
+
+    background: #FF936C;
+    overflow: hidden;
+}
+
+.alreadyRegisteredLink{
+
+    font-family: rocko;
+    font-size: 17px;
+    border: 2px solid black;
+    border-radius: 25px;
+    background: #EFC149;
+
+    margin-top: 10px;
+    height: 30px;
+    width: 150px;
+
+    text-align: center;
+    text-align: -webkit-center;
+    text-align: -moz-center;
+
+}
+
+
+

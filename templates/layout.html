@@ -3,8 +3,23 @@
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/main.css')}}">
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/body.css')}}">
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/login.css')}}">
-<body>
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/register.css')}}">
+
+<div style="display: flex;">
+    <!-- Main -->
+    <main style="
+        /* Take the remaining width */
+        flex: 1;
+
+        /* Make it scrollable */
+        overflow: auto;
+    ">
         {% block login %}
         {% endblock %}
-</body>  
+        {% block register %}
+        {% endblock %}
+
+    </main>
+</div>
+
 </html>

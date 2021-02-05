@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block register %}
+<form method= "post" class="registerForm" action="/SubmitNewUser">
+
+    <h1>Register</h1>
+    <div class="form-group"><input type="text" name="userName" placeholder="Name"></div>
+    <div class="form-group"><input type="email" name="userEmail" placeholder="Email"></div>
+    <div class="form-group"><input type="password" name="password" placeholder="Password"></div>
+    <div class="form-group"><input type="password" name="passwordCheck" placeholder="Password Again"></div>
+    <div class="form-group"><input type="submit" name="register" value="Register" class="btn btn-primary btn-block"></div>
+
+    <div align="right">
+        <div class="alreadyRegisteredLink">
+            <a href="login" title="Already Registered?">Already Registered?</a>
+    </div>
+    </div>
+</form>
+
+{% endblock %}
