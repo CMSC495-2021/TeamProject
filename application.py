@@ -34,13 +34,13 @@ def register():
 @app.route('/SubmitNewUser', methods=["POST", "GET"])
 def SubmitNewUser():
     # aws access keys
-    aws_access_key_id = "ASIARSOHCYSCJ52PJCXI"
-    aws_secret_access_key = "jAx7JK2ydkQEM5WByGqzI+OirR7tIO7c1aL8PIqb"
-    aws_session_token = "FwoGZXIvYXdzEFUaDCgt7re2feh657Xt2iLIAbwdRRwh2cqIHQtEaV8iN1D3RRHesu2X2" \
-                        "sSkAz3WgVzu0YTjVvjRraLT2NkEvN+2m1q1Q2fCB3u+oN5pLYDINdFn5hLcaR5zzGGX5knQgne" \
-                        "B1xPVfWYVJJUIyK10hhpWGWczdCRd7SpjF5wCwFNiXIN2EISWQZzR671h6VKYRN7ytbc+WqnI" \
-                        "20xqf7vSpM1mpijgqAu3ikvBsLWfHQNavLoWHObWUuV0yJHymlIELu44m5wcvuFGDUh9pk9a7" \
-                        "AFMQvRuV6+NV+jJKN6Y+IAGMi3cJCDAM4wiY1LV8tOFrEJBExwp0Q5JV/iknypZw/WUjkJRIf1RErid+h+kx5k="
+    aws_access_key_id = "ASIARSOHCYSCIOBBEJ7G"
+    aws_secret_access_key = "5OcUb4STA0pBXNm+1raeM5CGIbWmt5xcH/DSOdK6"
+    aws_session_token = "FwoGZXIvYXdzEGYaDH2HkQLWg9u1YyrjPSLIAbLYHadpcSMk7dCB7v7melCLm7lu3l94l8" \
+                        "nDtT+Eq3YP8bqEBUOhfbGFASQI9KxJJlY13V6yI7nflAElGCVmM0pUv/Xk7cBYyqWJDCy3vq65T" \
+                        "j66S4ngyaWC6PFavNxcUAYG1t0+h3pcvrrulnQX84vYWLG12D0j+HCpL4e2EG37X7rPkcjRW+t0BTE1" \
+                        "ziA5viEd82ryNg1W1QOQJYGm+Nt7HDcLLxwtSj1TdsvU9xdWnP+U1+l0x7JNiJ7p5Qe8t3MbKPpta1" \
+                        "nsKOmD/IAGMi1OYg6KYdDyJK0xxTwixWlxzyW2aS1IWy0noraVzeRiaQ6WtLK1uHNMwcgbtvc="
 
     dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                                 aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
@@ -75,10 +75,9 @@ def SubmitNewUser():
         count = encrypted_resource.scan(crypto_config=custom_crypto_config)
         userID = int(len(count['Items']) + 1)
 
-        userScan = encrypted_resource.scan(FilterExpression=Attr("UserName").ne(userName),
-                                           crypto_config=custom_crypto_config)
+        userScan = dbResource.scan(FilterExpression=Attr("UserName").ne(userName))
 
-        if userScan:
+        if not userScan:
 
             if password == passwordCheck:
 
