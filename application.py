@@ -1,14 +1,14 @@
-from dynamodb_encryption_sdk.encrypted import CryptoConfig
-from flask import Flask, render_template, request
-import boto3
-from numpy import random
-from datetime import date
+from datetime import datetime
 
+import boto3
+from boto3.dynamodb.conditions import Attr
+from dynamodb_encryption_sdk.encrypted import CryptoConfig
 # crypto imports
 from dynamodb_encryption_sdk.encrypted.table import EncryptedTable
 from dynamodb_encryption_sdk.identifiers import CryptoAction
 from dynamodb_encryption_sdk.material_providers.aws_kms import AwsKmsCryptographicMaterialsProvider
 from dynamodb_encryption_sdk.structures import AttributeActions, EncryptionContext
+from flask import Flask, render_template, request
 
 # from livereload import Server commented this out so my IDE doesn't freak out. -DJ
 
@@ -33,15 +33,14 @@ def register():
 
 @app.route('/SubmitNewUser', methods=["POST", "GET"])
 def SubmitNewUser():
-
     # aws access keys
-    aws_access_key_id = "ASIARSOHCYSCHK6L2RFY"
-    aws_secret_access_key = "pcg/B6f7+3ybMuOGLmCeCMu47/GXmJzS+pksUFvn"
-    aws_session_token = "FwoGZXIvYXdzEFIaDOUnumPvLcdcOe0xQyLIAf97MMV66fbAuy3ffr8GLX+wyUkGN" \
-                        "Z/VB6ZX5uR2qObxI0CkqzyVrSjVKq8hJNsnrxH5pYbfdsOoUOxBbFWEFJsjdvxE3KmIQId7jB" \
-                        "VNTOE0XRHAw0/qO+TuWsROdVt0bIxEeXZuOLHBHnfnFdIVOYIXN2AncIh62J6zqb96dhth4mb3hwR7+7" \
-                        "EcCTjwydXWmbSvF647f9vuwlQfTuw07npfV37REpERXmg6vDjhoxG4yh7WKQ32eZ62NgrEtFQmKiF2Q6RfWuy" \
-                        "XKK/B94AGMi0qaBDet+nqoZC39xpa9yeJb9p/GSPu4gjBX4Tc62ZW2wDTkyCsxpwtcdppuKk="
+    aws_access_key_id = "ASIARSOHCYSCJ52PJCXI"
+    aws_secret_access_key = "jAx7JK2ydkQEM5WByGqzI+OirR7tIO7c1aL8PIqb"
+    aws_session_token = "FwoGZXIvYXdzEFUaDCgt7re2feh657Xt2iLIAbwdRRwh2cqIHQtEaV8iN1D3RRHesu2X2" \
+                        "sSkAz3WgVzu0YTjVvjRraLT2NkEvN+2m1q1Q2fCB3u+oN5pLYDINdFn5hLcaR5zzGGX5knQgne" \
+                        "B1xPVfWYVJJUIyK10hhpWGWczdCRd7SpjF5wCwFNiXIN2EISWQZzR671h6VKYRN7ytbc+WqnI" \
+                        "20xqf7vSpM1mpijgqAu3ikvBsLWfHQNavLoWHObWUuV0yJHymlIELu44m5wcvuFGDUh9pk9a7" \
+                        "AFMQvRuV6+NV+jJKN6Y+IAGMi3cJCDAM4wiY1LV8tOFrEJBExwp0Q5JV/iknypZw/WUjkJRIf1RErid+h+kx5k="
 
     dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                                 aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
@@ -71,21 +70,32 @@ def SubmitNewUser():
         userEmail = str(request.form['userEmail'])
         password = str(request.form['password'])
         passwordCheck = str(request.form['passwordCheck'])
-        dateCreated = str(date)
-        userID = int(random.randint(9999))
+        dateCreated = str(datetime.now().isoformat())
 
-        if password == passwordCheck:
-            encrypted_resource.put_item(
-                TableName='Users',
-                Item={'UserName': userName,
-                      'UserID': userID,
-                      'UserEmail': userEmail,
-                      'DateCreated': dateCreated,
-                      'password': password
-                      }, crypto_config=custom_crypto_config)
+        count = encrypted_resource.scan(crypto_config=custom_crypto_config)
+        userID = int(len(count['Items']) + 1)
 
-            return render_template('login.html')
+        userScan = encrypted_resource.scan(FilterExpression=Attr("UserName").ne(userName),
+                                           crypto_config=custom_crypto_config)
 
+        if userScan:
+
+            if password == passwordCheck:
+
+                encrypted_resource.put_item(
+                    TableName='Users',
+                    Item={'UserID': userID,
+                          'DateCreated': dateCreated,
+                          'UserName': userName,
+                          'UserEmail': userEmail,
+                          'password': password
+                          },
+                    crypto_config=custom_crypto_config)
+
+                return render_template('login.html')
+
+            else:
+                return render_template('register.html')
         else:
             return render_template('register.html')
 
