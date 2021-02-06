@@ -1,40 +1,53 @@
+/** 
+    Requires universal tag css set in login.css
+    Custom class assigned as necessary
+*/
 
-  @font-face {
-        font-family: rocko;
-    src: url('../font/rocko.ttf');
-    }
-
-.registerForm{
-
-    font-family: rocko;
-    font-size: 19px;
-    padding: 10px;
-    border: 2px solid black;
-    border-radius: 25px;
-
-    width: 400px;
-
-    background: #FF936C;
-    overflow: hidden;
+@font-face {
+  font-family: rocko;
+  src: url("../font/rocko.ttf");
 }
 
-.alreadyRegisteredLink{
-
-    font-family: rocko;
-    font-size: 17px;
-    border: 2px solid black;
-    border-radius: 25px;
-    background: #EFC149;
-
-    margin-top: 10px;
-    height: 30px;
-    width: 150px;
-
-    text-align: center;
-    text-align: -webkit-center;
-    text-align: -moz-center;
-
+.registerForm {
+  font-size: 19px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 25px;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 2rem 0;
+  height: -webkit-fill-available;
+  text-align: center;
 }
 
+.registerImg {
+  width: 20%;
+  display: block;
+  text-align: center;
+  margin: 0 auto;
+}
 
+/* Overrides input tag css to mimic button tag */
+.registerButton {
+  background-color: white;
+  color: #7797dd;
+  border: 0;
+  padding: 10px 15px;
+  border-radius: 3px;
+  width: 282px;
+  cursor: pointer;
+  font-size: 18px;
+}
 
+.loginLink {
+  padding-top: 15px;
+}
+
+.loginLink a {
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 7px;
+  margin: 5px;
+  background: #5f7cf9;
+  border-radius: 5px;
+  text-decoration: none;
+}
