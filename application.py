@@ -77,7 +77,7 @@ def SubmitNewUser():
 
         userScan = dbResource.scan(FilterExpression=Attr("UserName").ne(userName))
 
-        if userScan:
+        if not userScan:
 
             if password == passwordCheck:
 
