@@ -1,9 +1,16 @@
 @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300);
 body{
-    background: #7797dd;
-    background: linear-gradient(to top, #7797dd 0.84%, #5fbefd);
-    font-family: 'Source Sans Pro', sans-serif;
 	color: white;
-	font-weight: 300;
+    font-family: 'Source Sans Pro', sans-serif;
+    background: linear-gradient(to top, #7797dd, #5fbefd);
+    height: 100%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    display: flex; /* Set flex to the whole body */
+}
+
+main {
+    flex: 1;
+    overflow: auto;
 }
 
