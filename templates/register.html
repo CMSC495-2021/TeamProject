@@ -1,20 +1,67 @@
-{% extends "layout.html" %}
-
-{% block register %}
-<form method= "post" class="registerForm" action="/SubmitNewUser">
+{% extends "layout.html" %} {% block register %}
+<div class="registerForm">
+  <form method="post" action="/SubmitNewUser">
+    <svg
+      class="registerImg"
+      viewBox="0 0 32 32"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <style>
+          .cls-1 {
+            fill: #5f7cf9;
+          }
+          .cls-2 {
+            fill: #8c9eff;
+          }
+          .cls-3 {
+            fill: #4062ed;
+          }
+        </style>
+      </defs>
+      <title />
+      <g id="People">
+        <circle class="cls-1" cx="16" cy="8.5" r="5.5" />
+        <path
+          class="cls-2"
+          d="M16,15a9,9,0,0,0-9,9v4a1,1,0,0,0,1,1H24a1,1,0,0,0,1-1V24A9,9,0,0,0,16,15Z"
+        />
+        <path class="cls-3" d="M16,3V14A5.5,5.5,0,0,0,16,3Z" />
+        <path class="cls-1" d="M16,15V29h8a1,1,0,0,0,1-1V24A9,9,0,0,0,16,15Z" />
+      </g>
+    </svg>
 
     <h1>Register</h1>
-    <div class="form-group"><input type="text" name="userName" placeholder="Name"></div>
-    <div class="form-group"><input type="email" name="userEmail" placeholder="Email"></div>
-    <div class="form-group"><input type="password" name="password" placeholder="Password"></div>
-    <div class="form-group"><input type="password" name="passwordCheck" placeholder="Password Again"></div>
-    <div class="form-group"><input type="submit" name="register" value="Register" class="btn btn-primary btn-block"></div>
-
-    <div align="right">
-        <div class="alreadyRegisteredLink">
-            <a href="login" title="Already Registered?">Already Registered?</a>
+    <div class="form-group">
+      <input type="text" name="userName" placeholder="Name" />
     </div>
+    <div class="form-group">
+      <input type="email" name="userEmail" placeholder="Email" />
     </div>
-</form>
+    <div class="form-group">
+      <input type="password" name="password" placeholder="Password" />
+    </div>
+    <div class="form-group">
+      <input
+        type="password"
+        name="passwordCheck"
+        placeholder="Password Again"
+      />
+    </div>
+    <div class="form-group">
+      <input
+        type="submit"
+        name="register"
+        value="Register"
+        class="registerButton btn btn-primary"
+      />
+    </div>
 
+    <div>
+      <div class="loginLink">
+        <a href="login" title="Already Registered?">Already Registered?</a>
+      </div>
+    </div>
+  </form>
+</div>
 {% endblock %}
