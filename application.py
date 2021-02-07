@@ -1,7 +1,6 @@
 from datetime import datetime
 
 import boto3
-from boto3.dynamodb.conditions import Attr
 from dynamodb_encryption_sdk.encrypted import CryptoConfig
 # crypto imports
 from dynamodb_encryption_sdk.encrypted.table import EncryptedTable
@@ -34,13 +33,13 @@ def register():
 @app.route('/SubmitNewUser', methods=["POST", "GET"])
 def SubmitNewUser():
     # aws access keys
-    aws_access_key_id = "ASIARSOHCYSCIOBBEJ7G"
-    aws_secret_access_key = "5OcUb4STA0pBXNm+1raeM5CGIbWmt5xcH/DSOdK6"
-    aws_session_token = "FwoGZXIvYXdzEGYaDH2HkQLWg9u1YyrjPSLIAbLYHadpcSMk7dCB7v7melCLm7lu3l94l8" \
-                        "nDtT+Eq3YP8bqEBUOhfbGFASQI9KxJJlY13V6yI7nflAElGCVmM0pUv/Xk7cBYyqWJDCy3vq65T" \
-                        "j66S4ngyaWC6PFavNxcUAYG1t0+h3pcvrrulnQX84vYWLG12D0j+HCpL4e2EG37X7rPkcjRW+t0BTE1" \
-                        "ziA5viEd82ryNg1W1QOQJYGm+Nt7HDcLLxwtSj1TdsvU9xdWnP+U1+l0x7JNiJ7p5Qe8t3MbKPpta1" \
-                        "nsKOmD/IAGMi1OYg6KYdDyJK0xxTwixWlxzyW2aS1IWy0noraVzeRiaQ6WtLK1uHNMwcgbtvc="
+    aws_access_key_id = "ASIARSOHCYSCIEZTY4VQ"
+    aws_secret_access_key = "iWq6zUpZvA1e7aBFWDbRLXMxugzC7et4SS4NLpei"
+    aws_session_token = "FwoGZXIvYXdzEGkaDL1FjS+1aghZ178JmCLIAbI5plAW8ILntuYYU1zosfje4OwGN6wx+Fp" \
+                        "aHTvLqTGyj8hTXs4hRGethCqlCoIOHHJ6+FViUKaS9i20OJMucBNErSvouLZX15htNQdaAhaNNeyhnOVi" \
+                        "AbGD2iz0B4E3roKOyUusIbrTqgFzmztnL+hd7J7rn/7WAWwMEqc7zGLRKenM20l7JZomIuAAqMOv4kg69" \
+                        "ksM27XrmGAVrLV48FFAHbzPqNAzfkISuKXlYNx93JHkkfssDjRVFWlBas7CRh4/v+w4ZOZPKNnY/IAGMi" \
+                        "0PTwguh6XiR4CtRbAZL1vFn8OngznxtfurB3EZX1wyaddwo6CpchIrBfupHfg="
 
     dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                                 aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
@@ -75,30 +74,24 @@ def SubmitNewUser():
         count = encrypted_resource.scan(crypto_config=custom_crypto_config)
         userID = int(len(count['Items']) + 1)
 
-        userScan = dbResource.scan(FilterExpression=Attr("UserName").ne(userName))
+        if password == passwordCheck:
 
-        if not userScan:
+            encrypted_resource.put_item(
+                TableName='Users',
+                Item={'UserID': userID,
+                      'DateCreated': dateCreated,
+                      'UserName': userName,
+                      'UserEmail': userEmail,
+                      'password': password
+                      },
+                crypto_config=custom_crypto_config)
 
-            if password == passwordCheck:
+            return render_template('login.html')
 
-                encrypted_resource.put_item(
-                    TableName='Users',
-                    Item={'UserID': userID,
-                          'DateCreated': dateCreated,
-                          'UserName': userName,
-                          'UserEmail': userEmail,
-                          'password': password
-                          },
-                    crypto_config=custom_crypto_config)
-
-                return render_template('login.html')
-
-            else:
-                return render_template('register.html')
         else:
             return render_template('register.html')
-
-    return 'ERROR! Did not create a user!'
+    else:
+        return render_template('register.html')
 
 
 if __name__ == '__main__':
