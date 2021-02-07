@@ -33,13 +33,13 @@ def register():
 @app.route('/SubmitNewUser', methods=["POST", "GET"])
 def SubmitNewUser():
     # aws access keys
-    aws_access_key_id = "ASIARSOHCYSCIEZTY4VQ"
-    aws_secret_access_key = "iWq6zUpZvA1e7aBFWDbRLXMxugzC7et4SS4NLpei"
-    aws_session_token = "FwoGZXIvYXdzEGkaDL1FjS+1aghZ178JmCLIAbI5plAW8ILntuYYU1zosfje4OwGN6wx+Fp" \
-                        "aHTvLqTGyj8hTXs4hRGethCqlCoIOHHJ6+FViUKaS9i20OJMucBNErSvouLZX15htNQdaAhaNNeyhnOVi" \
-                        "AbGD2iz0B4E3roKOyUusIbrTqgFzmztnL+hd7J7rn/7WAWwMEqc7zGLRKenM20l7JZomIuAAqMOv4kg69" \
-                        "ksM27XrmGAVrLV48FFAHbzPqNAzfkISuKXlYNx93JHkkfssDjRVFWlBas7CRh4/v+w4ZOZPKNnY/IAGMi" \
-                        "0PTwguh6XiR4CtRbAZL1vFn8OngznxtfurB3EZX1wyaddwo6CpchIrBfupHfg="
+    aws_access_key_id = "ASIARSOHCYSCNQN4QMHC"
+    aws_secret_access_key = "3++gsIt20WqqLnvCPBQ3Q+AMrtPJUNAsbgyDuKF7"
+    aws_session_token = "FwoGZXIvYXdzEHkaDGhKSGv4Yvn6kUJYeiLIASiXYuqtBFnDOSFhrwBbAkDab+gt8jAeeJRUNnhV3r" \
+                        "0+faztyQkhqnfJb5PvnfH/ZpUkbyUG7MRT6TOF1sleXHYkYc+QAJOdMk1WxVaX9Vu2leJvsqWYQZ1YV1" \
+                        "OOgUIxg+pxTnWMA2mPNnVMly/wRW97PnNYecLPhAdXm7yEikRiTrlx3SFcsRPNLN+Unphh9fa7cpchRh" \
+                        "sYzkhkQTm6P5e6fVHHmSjZuZqt6WtVGd8iq2qjzzYCJG6rThH5B1tbnILgF8hsCJOJKKuEgIEGMi07SumZ" \
+                        "CDuGazz1NNtI5RhDWl6i9VD2K6fEYwRJBqq4rKNQ3hqCOmmLGyPUWOM="
 
     dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                                 aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
@@ -78,9 +78,9 @@ def SubmitNewUser():
 
             encrypted_resource.put_item(
                 TableName='Users',
-                Item={'UserID': userID,
+                Item={'UserName': userName,
+                      'UserID': userID,
                       'DateCreated': dateCreated,
-                      'UserName': userName,
                       'UserEmail': userEmail,
                       'password': password
                       },
