@@ -130,6 +130,7 @@ def SubmitNewUser():
                                         attribute_actions=crypto_actions)
 
     if request.method == 'POST':
+
         userName = str(request.form['userName'])
         userEmail = str(request.form['userEmail'])
         password = str(request.form['password'])
@@ -139,24 +140,38 @@ def SubmitNewUser():
         count = encrypted_resource.scan(crypto_config=custom_crypto_config)
         userID = int(len(count['Items']) + 1)
 
-        if password == passwordCheck:
+        try:
+            response = encrypted_resource.query(
+                KeyConditionExpression=Key('UserName').eq(userName),
+                crypto_config=custom_crypto_config
+            )
 
-            encrypted_resource.put_item(
-                TableName='Users',
-                Item={'UserName': userName,
-                      'UserID': userID,
-                      'DateCreated': dateCreated,
-                      'UserEmail': userEmail,
-                      'password': password
-                      },
-                crypto_config=custom_crypto_config)
+            items = response['Items']
+            uniqueUser = items[0]['UserName']
 
-            return render_template('login.html')
+            try:
+                if uniqueUser == userName:
+                    return render_template('register.html')
+            except:
+                return render_template('register.html')
+        except:
+            try:
+                if password == passwordCheck:
+                    encrypted_resource.put_item(
+                        TableName='Users',
+                        Item={'UserName': userName,
+                              'UserID': userID,
+                              'DateCreated': dateCreated,
+                              'UserEmail': userEmail,
+                              'password': password
+                              },
+                        crypto_config=custom_crypto_config)
 
-        else:
-            return render_template('register.html')
-    else:
-        return render_template('register.html')
+                    return render_template('login.html')
+                else:
+                    return render_template('register.html')
+            except:
+                return render_template('register.html')
 
 
 if __name__ == '__main__':
