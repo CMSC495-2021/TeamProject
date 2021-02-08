@@ -34,13 +34,13 @@ def register():
 @app.route('/Authenticate', methods=["POST", "GET"])
 def Authenticate():
     # aws access keys
-    aws_access_key_id = "ASIARSOHCYSCNQN4QMHC"
-    aws_secret_access_key = "3++gsIt20WqqLnvCPBQ3Q+AMrtPJUNAsbgyDuKF7"
-    aws_session_token = "FwoGZXIvYXdzEHkaDGhKSGv4Yvn6kUJYeiLIASiXYuqtBFnDOSFhrwBbAkDab+gt8jAeeJRUNnhV3r" \
-                        "0+faztyQkhqnfJb5PvnfH/ZpUkbyUG7MRT6TOF1sleXHYkYc+QAJOdMk1WxVaX9Vu2leJvsqWYQZ1YV1" \
-                        "OOgUIxg+pxTnWMA2mPNnVMly/wRW97PnNYecLPhAdXm7yEikRiTrlx3SFcsRPNLN+Unphh9fa7cpchRh" \
-                        "sYzkhkQTm6P5e6fVHHmSjZuZqt6WtVGd8iq2qjzzYCJG6rThH5B1tbnILgF8hsCJOJKKuEgIEGMi07SumZ" \
-                        "CDuGazz1NNtI5RhDWl6i9VD2K6fEYwRJBqq4rKNQ3hqCOmmLGyPUWOM="
+    aws_access_key_id = "ASIARSOHCYSCDUTLSRYE"
+    aws_secret_access_key = "XD/msFVUmEQPqHvVdUfXxJeQJT6E4ne6Rd+M+4h9"
+    aws_session_token = "FwoGZXIvYXdzEI///////////wEaDNErMUf8vZhX6iJ7liLIAcReUHyar5V292FIS7OjgQNgc38MqHTxHMN/6G5G" \
+                        "7JPOYOsOKiTlxaa3c1YV2KYXDTQJwkFBR7Ll78V2va5/J9NRd3aQiRN2gDUcfFP7KqyJNED5gsm1JYiGxwL2C/FMsi" \
+                        "u/0hgaiUu5rKnYOo50bFAOV3D2hvpDIf/CCDCfmio2CplLuAJ/mrFjw+FsylcO3cxPXVUSC1q5tZD5YOvmmnH6apcHfb" \
+                        "ps1o6GriLgwX9mYMBfgqRkvHUDEMfjVxL8iwdgN8+LoijUKMP/hIEGMi0XvM4PEnA13g8s83X/Yor8nDWkTGRY" \
+                        "okb12nKv219nL4vps0Q+zKmrHRTKjhU="
 
     dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                                 aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
@@ -98,13 +98,13 @@ def Authenticate():
 @app.route('/SubmitNewUser', methods=["POST", "GET"])
 def SubmitNewUser():
     # aws access keys
-    aws_access_key_id = "ASIARSOHCYSCNQN4QMHC"
-    aws_secret_access_key = "3++gsIt20WqqLnvCPBQ3Q+AMrtPJUNAsbgyDuKF7"
-    aws_session_token = "FwoGZXIvYXdzEHkaDGhKSGv4Yvn6kUJYeiLIASiXYuqtBFnDOSFhrwBbAkDab+gt8jAeeJRUNnhV3r" \
-                        "0+faztyQkhqnfJb5PvnfH/ZpUkbyUG7MRT6TOF1sleXHYkYc+QAJOdMk1WxVaX9Vu2leJvsqWYQZ1YV1" \
-                        "OOgUIxg+pxTnWMA2mPNnVMly/wRW97PnNYecLPhAdXm7yEikRiTrlx3SFcsRPNLN+Unphh9fa7cpchRh" \
-                        "sYzkhkQTm6P5e6fVHHmSjZuZqt6WtVGd8iq2qjzzYCJG6rThH5B1tbnILgF8hsCJOJKKuEgIEGMi07SumZ" \
-                        "CDuGazz1NNtI5RhDWl6i9VD2K6fEYwRJBqq4rKNQ3hqCOmmLGyPUWOM="
+    aws_access_key_id = "ASIARSOHCYSCDUTLSRYE"
+    aws_secret_access_key = "XD/msFVUmEQPqHvVdUfXxJeQJT6E4ne6Rd+M+4h9"
+    aws_session_token = "FwoGZXIvYXdzEI///////////wEaDNErMUf8vZhX6iJ7liLIAcReUHyar5V292FIS7OjgQNgc38MqHTxHMN/6G5G" \
+                        "7JPOYOsOKiTlxaa3c1YV2KYXDTQJwkFBR7Ll78V2va5/J9NRd3aQiRN2gDUcfFP7KqyJNED5gsm1JYiGxwL2C/FMsi" \
+                        "u/0hgaiUu5rKnYOo50bFAOV3D2hvpDIf/CCDCfmio2CplLuAJ/mrFjw+FsylcO3cxPXVUSC1q5tZD5YOvmmnH6apcHfb" \
+                        "ps1o6GriLgwX9mYMBfgqRkvHUDEMfjVxL8iwdgN8+LoijUKMP/hIEGMi0XvM4PEnA13g8s83X/Yor8nDWkTGRY" \
+                        "okb12nKv219nL4vps0Q+zKmrHRTKjhU="
 
     dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                                 aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
