@@ -1,5 +1,5 @@
 from datetime import datetime
-#boto 3
+# boto 3
 import boto3
 from boto3.dynamodb.conditions import Key
 from dynamodb_encryption_sdk.encrypted import CryptoConfig
@@ -10,9 +10,16 @@ from dynamodb_encryption_sdk.material_providers.aws_kms import AwsKmsCryptograph
 from dynamodb_encryption_sdk.structures import AttributeActions, EncryptionContext
 from flask import Flask, render_template, request
 
+# socketIO/chat imports
+from flask_socketio import SocketIO, send
+
 # from livereload import Server commented this out so my IDE doesn't freak out. -DJ
 
 application = app = Flask(__name__, static_folder='static', static_url_path='/static')
+app.secret_key = 'test_key'
+
+# SocketIO Initialization
+socketIO = SocketIO(app)
 
 
 @app.route('/index', methods=["GET"])
@@ -34,13 +41,13 @@ def register():
 @app.route('/Authenticate', methods=["POST", "GET"])
 def Authenticate():
     # aws access keys
-    aws_access_key_id = "ASIARSOHCYSCDUTLSRYE"
-    aws_secret_access_key = "XD/msFVUmEQPqHvVdUfXxJeQJT6E4ne6Rd+M+4h9"
-    aws_session_token = "FwoGZXIvYXdzEI///////////wEaDNErMUf8vZhX6iJ7liLIAcReUHyar5V292FIS7OjgQNgc38MqHTxHMN/6G5G" \
-                        "7JPOYOsOKiTlxaa3c1YV2KYXDTQJwkFBR7Ll78V2va5/J9NRd3aQiRN2gDUcfFP7KqyJNED5gsm1JYiGxwL2C/FMsi" \
-                        "u/0hgaiUu5rKnYOo50bFAOV3D2hvpDIf/CCDCfmio2CplLuAJ/mrFjw+FsylcO3cxPXVUSC1q5tZD5YOvmmnH6apcHfb" \
-                        "ps1o6GriLgwX9mYMBfgqRkvHUDEMfjVxL8iwdgN8+LoijUKMP/hIEGMi0XvM4PEnA13g8s83X/Yor8nDWkTGRY" \
-                        "okb12nKv219nL4vps0Q+zKmrHRTKjhU="
+    aws_access_key_id = "ASIARSOHCYSCJ7XN3L7R"
+    aws_secret_access_key = "02ixhEKu8kfjqVdz1xLUxcMv5KzImOCHUd8SaNBN"
+    aws_session_token = "FwoGZXIvYXdzENr//////////wEaDFc8iukIv4JfNJCyNCLIAajTzzopidRp0dVd33+PfwA7clozzzv4EnjF" \
+                        "eTsgz9hA0hUFOybcy71ISMTyva2q2WrTi0CwqBg0glVcYNRYnJBuSHDf5QtHs1Wf9yQN8GyTi56VtaBYcYuX58eIMu" \
+                        "+rWvMUnrLcSjWbYcuuSxsXt3oDug57A1o1VxLzvbEtmneehYuXGTAXtIqR84AwX89EXXdCbVZ4pa3Yt2WlcR4bD" \
+                        "8QZAtKJ2Y5XLVjPhj39zi8FdEGM+nNyWqEuMNDqrb07KYHmBtYegsB8KOzClYEGMi2k/o8DUC9Q3O/O0cdZ9up" \
+                        "GtInof0jjxYigVeAR4Q+y44Hy+t1ApsA2xe4P6uo="
 
     dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                                 aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
@@ -98,13 +105,14 @@ def Authenticate():
 @app.route('/SubmitNewUser', methods=["POST", "GET"])
 def SubmitNewUser():
     # aws access keys
-    aws_access_key_id = "ASIARSOHCYSCDUTLSRYE"
-    aws_secret_access_key = "XD/msFVUmEQPqHvVdUfXxJeQJT6E4ne6Rd+M+4h9"
-    aws_session_token = "FwoGZXIvYXdzEI///////////wEaDNErMUf8vZhX6iJ7liLIAcReUHyar5V292FIS7OjgQNgc38MqHTxHMN/6G5G" \
-                        "7JPOYOsOKiTlxaa3c1YV2KYXDTQJwkFBR7Ll78V2va5/J9NRd3aQiRN2gDUcfFP7KqyJNED5gsm1JYiGxwL2C/FMsi" \
-                        "u/0hgaiUu5rKnYOo50bFAOV3D2hvpDIf/CCDCfmio2CplLuAJ/mrFjw+FsylcO3cxPXVUSC1q5tZD5YOvmmnH6apcHfb" \
-                        "ps1o6GriLgwX9mYMBfgqRkvHUDEMfjVxL8iwdgN8+LoijUKMP/hIEGMi0XvM4PEnA13g8s83X/Yor8nDWkTGRY" \
-                        "okb12nKv219nL4vps0Q+zKmrHRTKjhU="
+    aws_access_key_id = "ASIARSOHCYSCJ7XN3L7R"
+    aws_secret_access_key = "02ixhEKu8kfjqVdz1xLUxcMv5KzImOCHUd8SaNBN"
+    aws_session_token = "FwoGZXIvYXdzENr//////////wEaDFc8iukIv4JfNJCyNCLIAajTzzopidRp0dVd33+PfwA7clozzzv4EnjF" \
+                        "eTsgz9hA0hUFOybcy71ISMTyva2q2WrTi0CwqBg0glVcYNRYnJBuSHDf5QtHs1Wf9yQN8GyTi56VtaBYcYuX58eIMu" \
+                        "+rWvMUnrLcSjWbYcuuSxsXt3oDug57A1o1VxLzvbEtmneehYuXGTAXtIqR84AwX89EXXdCbVZ4pa3Yt2WlcR4bD" \
+                        "8QZAtKJ2Y5XLVjPhj39zi8FdEGM+nNyWqEuMNDqrb07KYHmBtYegsB8KOzClYEGMi2k/o8DUC9Q3O/O0cdZ9up" \
+                        "GtInof0jjxYigVeAR4Q+y44Hy+t1ApsA2xe4P6uo="
+
 
     dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                                 aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
@@ -173,9 +181,18 @@ def SubmitNewUser():
             except:
                 return render_template('register.html')
 
+@app.route("/chatmain", methods=["GET", "POST"])
+def chatmain():
+    return render_template('chatmain.html')
+
+# SocketIO Event Handler
+@socketIO.on('message')
+def message(data):
+    send(data)
+
 
 if __name__ == '__main__':
-    app.run()
+    socketIO.run(app)
     """
     Use the following two lines to locally run the application with livereload (view changes as you make them)
     You will also need to comment out the app.run()

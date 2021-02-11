@@ -1,6 +1,8 @@
 {% extends "layout.html" %} {% block register %}
 <div class="registerForm">
-  <form method="post" action="#">
+  <div id="chat-area">
+
+    <form method="post" action="#">
     <svg
       class="registerImg"
       viewBox="0 0 32 32"
@@ -30,21 +32,26 @@
         <path class="cls-1" d="M16,15V29h8a1,1,0,0,0,1-1V24A9,9,0,0,0,16,15Z" />
       </g>
     </svg>
-
+      <div id="message-input">
     <h1>Chat</h1>
     <div class="form-group">
-      <input type="text" name="message" placeholder="Type a Message" />
+      <input type="text" id="message_box" placeholder="Type a Message" />
     </div>
-
-
     <div class="form-group">
       <input
-        type="send"
-        name="sendmessage"
+        type="submit"
+        id="send_message_button"
         value="Send Message"
         class="registerButton btn btn-primary"
       />
     </div>
+    </div>
   </form>
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"
+            integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+
+    <script src="{{  url_for('static', filename='scripts/socketio.js') }}"></script>
 </div>
+     </div>
+
 {% endblock %}
