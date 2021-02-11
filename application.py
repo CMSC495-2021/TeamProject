@@ -8,7 +8,7 @@ from dynamodb_encryption_sdk.encrypted.table import EncryptedTable
 from dynamodb_encryption_sdk.identifiers import CryptoAction
 from dynamodb_encryption_sdk.material_providers.aws_kms import AwsKmsCryptographicMaterialsProvider
 from dynamodb_encryption_sdk.structures import AttributeActions, EncryptionContext
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, flash
 
 # socketIO/chat imports
 from flask_socketio import SocketIO, send
@@ -41,13 +41,13 @@ def register():
 @app.route('/Authenticate', methods=["POST", "GET"])
 def Authenticate():
     # aws access keys
-    aws_access_key_id = "ASIARSOHCYSCJ7XN3L7R"
-    aws_secret_access_key = "02ixhEKu8kfjqVdz1xLUxcMv5KzImOCHUd8SaNBN"
-    aws_session_token = "FwoGZXIvYXdzENr//////////wEaDFc8iukIv4JfNJCyNCLIAajTzzopidRp0dVd33+PfwA7clozzzv4EnjF" \
-                        "eTsgz9hA0hUFOybcy71ISMTyva2q2WrTi0CwqBg0glVcYNRYnJBuSHDf5QtHs1Wf9yQN8GyTi56VtaBYcYuX58eIMu" \
-                        "+rWvMUnrLcSjWbYcuuSxsXt3oDug57A1o1VxLzvbEtmneehYuXGTAXtIqR84AwX89EXXdCbVZ4pa3Yt2WlcR4bD" \
-                        "8QZAtKJ2Y5XLVjPhj39zi8FdEGM+nNyWqEuMNDqrb07KYHmBtYegsB8KOzClYEGMi2k/o8DUC9Q3O/O0cdZ9up" \
-                        "GtInof0jjxYigVeAR4Q+y44Hy+t1ApsA2xe4P6uo="
+    aws_access_key_id = "ASIARSOHCYSCPAKIX45G"
+    aws_secret_access_key = "rmCRDLvLQ4e2rTMPXsGslfyj7eez7t08BD8ACsk3"
+    aws_session_token = "FwoGZXIvYXdzEN3//////////wEaDKjIorszqcZ13xm7YiLIAeK35pNEyKjBgNsxivnFjAOsWwok1rmeo" \
+                        "9lzkqUUpC4519DsAtIbJZIYCQ1+l5hQ08rSw/q2GVAioylm+oCxsCld1FKUVgfvRaq2gYQ3c7vhvUpxC/fpO7jVNg" \
+                        "fena/gi2Hw9DxGvSQaeDwEBoeDwQkBsMGbqo9zuBvxmW5ii2DIp/EryyCqfuFulvVoH3TbQu9/6i/IiMGFL4fw" \
+                        "0v5mp0c0PgamS3F/j/3HsiE5z462oOm9Oc+IYqk16mJpP7kwc5Gmr13AF36lKIyZloEGMi22LtCMl9hX76b0b" \
+                        "PrufhZICKbIWoK/Pv+tHwIOeK0/Y2swTxMIzWQca3bvUDg="
 
     dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                                 aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
@@ -87,32 +87,37 @@ def Authenticate():
                 pw = items[0]['password']
                 try:
                     if password == pw:
-                        return render_template('chatmain.html')
+                        flash('Success!', 'Success')
+                        return redirect(url_for('chatmain'))
                     else:
-                        return render_template('login.html')
+                        flash('Bad UserName/Password', 'Failed')
+                        return redirect(url_for('login'))
                 except:
-                    return render_template('login.html')
+                    flash('Bad UserName/Password', 'Failed')
+                    return redirect(url_for('login'))
             except:
-                return render_template('login.html')
+                flash('Bad UserName/Password', 'Failed')
+                return redirect(url_for('login'))
 
         except:
-            return render_template('login.html')
+            flash('Bad UserName/Password', 'Failed')
+            return redirect(url_for('login'))
 
     else:
-        return render_template('login.html')
+        flash('Bad UserName/Password', 'Failed')
+        return redirect(url_for('login'))
 
 
 @app.route('/SubmitNewUser', methods=["POST", "GET"])
 def SubmitNewUser():
     # aws access keys
-    aws_access_key_id = "ASIARSOHCYSCJ7XN3L7R"
-    aws_secret_access_key = "02ixhEKu8kfjqVdz1xLUxcMv5KzImOCHUd8SaNBN"
-    aws_session_token = "FwoGZXIvYXdzENr//////////wEaDFc8iukIv4JfNJCyNCLIAajTzzopidRp0dVd33+PfwA7clozzzv4EnjF" \
-                        "eTsgz9hA0hUFOybcy71ISMTyva2q2WrTi0CwqBg0glVcYNRYnJBuSHDf5QtHs1Wf9yQN8GyTi56VtaBYcYuX58eIMu" \
-                        "+rWvMUnrLcSjWbYcuuSxsXt3oDug57A1o1VxLzvbEtmneehYuXGTAXtIqR84AwX89EXXdCbVZ4pa3Yt2WlcR4bD" \
-                        "8QZAtKJ2Y5XLVjPhj39zi8FdEGM+nNyWqEuMNDqrb07KYHmBtYegsB8KOzClYEGMi2k/o8DUC9Q3O/O0cdZ9up" \
-                        "GtInof0jjxYigVeAR4Q+y44Hy+t1ApsA2xe4P6uo="
-
+    aws_access_key_id = "ASIARSOHCYSCPAKIX45G"
+    aws_secret_access_key = "rmCRDLvLQ4e2rTMPXsGslfyj7eez7t08BD8ACsk3"
+    aws_session_token = "FwoGZXIvYXdzEN3//////////wEaDKjIorszqcZ13xm7YiLIAeK35pNEyKjBgNsxivnFjAOsWwok1rmeo" \
+                        "9lzkqUUpC4519DsAtIbJZIYCQ1+l5hQ08rSw/q2GVAioylm+oCxsCld1FKUVgfvRaq2gYQ3c7vhvUpxC/fpO7jVNg" \
+                        "fena/gi2Hw9DxGvSQaeDwEBoeDwQkBsMGbqo9zuBvxmW5ii2DIp/EryyCqfuFulvVoH3TbQu9/6i/IiMGFL4fw" \
+                        "0v5mp0c0PgamS3F/j/3HsiE5z462oOm9Oc+IYqk16mJpP7kwc5Gmr13AF36lKIyZloEGMi22LtCMl9hX76b0b" \
+                        "PrufhZICKbIWoK/Pv+tHwIOeK0/Y2swTxMIzWQca3bvUDg="
 
     dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                                 aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
@@ -159,9 +164,11 @@ def SubmitNewUser():
 
             try:
                 if uniqueUser == userName:
-                    return render_template('register.html')
+                    flash('Bad User Already Exists!', 'Failed')
+                    return redirect(url_for('register'))
             except:
-                return render_template('register.html')
+                flash('Bad User Already Exists!', 'Failed')
+                return redirect(url_for('register'))
         except:
             try:
                 if password == passwordCheck:
@@ -175,15 +182,20 @@ def SubmitNewUser():
                               },
                         crypto_config=custom_crypto_config)
 
-                    return render_template('login.html')
+                    flash('Success! Please Login.', 'Success!')
+                    return redirect(url_for('login'))
                 else:
-                    return render_template('register.html')
+                    flash('Passwords Do Not Match!', 'Failed')
+                    return redirect(url_for('register'))
             except:
-                return render_template('register.html')
+                flash('Passwords Do Not Match!', 'Failed')
+                return redirect(url_for('register'))
+
 
 @app.route("/chatmain", methods=["GET", "POST"])
 def chatmain():
     return render_template('chatmain.html')
+
 
 # SocketIO Event Handler
 @socketIO.on('message')

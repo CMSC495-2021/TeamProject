@@ -6,14 +6,13 @@ socket.on('connect', () => {
 });
 
 socket.on('message', data => {
-
     const p = document.createElement('p');
     //const brk = document.createElement('brk');
-    cwindow.innerHTML = data;
-    document.querySelector('#chat-area').append(p);
-
-
+    p.innerHTML = data;
+    document.querySelector('#display-area').append(p);
 });
+
+
 
 document.querySelector('#send_message_button').onclick = () => {
 
