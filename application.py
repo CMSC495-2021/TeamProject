@@ -11,7 +11,12 @@ from dynamodb_encryption_sdk.structures import AttributeActions, EncryptionConte
 from flask import Flask, render_template, request, redirect, url_for, flash
 
 # socketIO/chat imports
-from flask_socketio import SocketIO, send
+from flask_socketio import SocketIO, send, emit
+
+# flask-login
+from flask_login import LoginManager
+
+from models import User
 
 # from livereload import Server commented this out so my IDE doesn't freak out. -DJ
 
@@ -21,33 +26,20 @@ app.secret_key = 'test_key'
 # SocketIO Initialization
 socketIO = SocketIO(app)
 
-
-@app.route('/index', methods=["GET"])
-def index():
-    return render_template("index.html")
-
-
-@app.route('/login', methods=["GET", "POST"])
-@app.route('/', methods=["GET", "POST"])
-def login():
-    return render_template("login.html")
+# flask login
+login = LoginManager(app)
+login.init_app(app)
 
 
-@app.route('/register', methods=["POST", "GET"])
-def register():
-    return render_template('register.html')
-
-
-@app.route('/Authenticate', methods=["POST", "GET"])
-def Authenticate():
-    # aws access keys
-    aws_access_key_id = "ASIARSOHCYSCPAKIX45G"
-    aws_secret_access_key = "rmCRDLvLQ4e2rTMPXsGslfyj7eez7t08BD8ACsk3"
-    aws_session_token = "FwoGZXIvYXdzEN3//////////wEaDKjIorszqcZ13xm7YiLIAeK35pNEyKjBgNsxivnFjAOsWwok1rmeo" \
-                        "9lzkqUUpC4519DsAtIbJZIYCQ1+l5hQ08rSw/q2GVAioylm+oCxsCld1FKUVgfvRaq2gYQ3c7vhvUpxC/fpO7jVNg" \
-                        "fena/gi2Hw9DxGvSQaeDwEBoeDwQkBsMGbqo9zuBvxmW5ii2DIp/EryyCqfuFulvVoH3TbQu9/6i/IiMGFL4fw" \
-                        "0v5mp0c0PgamS3F/j/3HsiE5z462oOm9Oc+IYqk16mJpP7kwc5Gmr13AF36lKIyZloEGMi22LtCMl9hX76b0b" \
-                        "PrufhZICKbIWoK/Pv+tHwIOeK0/Y2swTxMIzWQca3bvUDg="
+# crypto items
+class CryptoItems:
+    aws_access_key_id = "ASIARSOHCYSCCAXFASUH"
+    aws_secret_access_key = "KlqN8k+WLUl4c1UVrTNybL0kbsnyBgEX4nDauEeU"
+    aws_session_token = "FwoGZXIvYXdzEOL//////////wEaDMOwDF4Rgj6z63GQPSLIAbXahFeqCqygvrwmKOann0cTXigG+HZX/K" \
+                        "U5u67VZwhM8MMCRmpFKdcp2HuKPDNvqkRMg/65OWFXtgLzLIZ3P3oOhRHEtmPnTG0V+NM8EN5BbwVNL9pjPFu/j" \
+                        "zGDIyynuZzz0IYUHlh7AO59+iqmNlpyMSOfLPeZsBQ7PvRNnHITddvBkyS8v7K5sJm0NmsDLxPWb7lFRn4K6e" \
+                        "2uWyl9y1xw5J8a9iuKnejppYQripOsXEONU4gBz/3xDhxlenmt8Is+zXP+lT4EKKiel4EGMi1H/jeDdRt0XciK9" \
+                        "NiHyhbWisFUgx1tvfUDg1loNNrE8PJQs88/Wb5mQWNvXCw="
 
     dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                                 aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
@@ -72,15 +64,34 @@ def Authenticate():
     encrypted_resource = EncryptedTable(table=dbResource, materials_provider=aws_kms_cmp,
                                         attribute_actions=crypto_actions)
 
+
+@app.route('/index', methods=["GET"])
+def index():
+    return render_template("index.html")
+
+
+@app.route('/login', methods=["GET", "POST"])
+@app.route('/', methods=["GET", "POST"])
+def login():
+    return render_template("login.html")
+
+
+@app.route('/register', methods=["POST", "GET"])
+def register():
+    return render_template('register.html')
+
+
+@app.route('/Authenticate', methods=["POST", "GET"])
+def Authenticate():
     if request.method == "POST":
 
         try:
             userName = str(request.form['username'])
             password = str(request.form['password'])
 
-            response = encrypted_resource.query(
+            response = CryptoItems.encrypted_resource.query(
                 KeyConditionExpression=Key('UserName').eq(userName),
-                crypto_config=custom_crypto_config
+                crypto_config=CryptoItems.custom_crypto_config
             )
             try:
                 items = response['Items']
@@ -110,38 +121,6 @@ def Authenticate():
 
 @app.route('/SubmitNewUser', methods=["POST", "GET"])
 def SubmitNewUser():
-    # aws access keys
-    aws_access_key_id = "ASIARSOHCYSCPAKIX45G"
-    aws_secret_access_key = "rmCRDLvLQ4e2rTMPXsGslfyj7eez7t08BD8ACsk3"
-    aws_session_token = "FwoGZXIvYXdzEN3//////////wEaDKjIorszqcZ13xm7YiLIAeK35pNEyKjBgNsxivnFjAOsWwok1rmeo" \
-                        "9lzkqUUpC4519DsAtIbJZIYCQ1+l5hQ08rSw/q2GVAioylm+oCxsCld1FKUVgfvRaq2gYQ3c7vhvUpxC/fpO7jVNg" \
-                        "fena/gi2Hw9DxGvSQaeDwEBoeDwQkBsMGbqo9zuBvxmW5ii2DIp/EryyCqfuFulvVoH3TbQu9/6i/IiMGFL4fw" \
-                        "0v5mp0c0PgamS3F/j/3HsiE5z462oOm9Oc+IYqk16mJpP7kwc5Gmr13AF36lKIyZloEGMi22LtCMl9hX76b0b" \
-                        "PrufhZICKbIWoK/Pv+tHwIOeK0/Y2swTxMIzWQca3bvUDg="
-
-    dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
-                                aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
-                                region_name='us-east-1').Table('Users')
-
-    # crypto key and material provider
-    aws_cmk_id = 'arn:aws:kms:us-east-1:108328567940:key/ac31eb77-1a66-452f-9744-8aec26b9aa74'
-    aws_kms_cmp = AwsKmsCryptographicMaterialsProvider(key_id=aws_cmk_id)
-
-    # how the crypto is applied to attributes
-    crypto_actions = AttributeActions(
-        default_action=CryptoAction.DO_NOTHING,
-        attribute_actions={
-            'password': CryptoAction.ENCRYPT_AND_SIGN})
-
-    crypto_context = EncryptionContext(table_name='Users')
-
-    custom_crypto_config = CryptoConfig(materials_provider=aws_kms_cmp,
-                                        attribute_actions=crypto_actions,
-                                        encryption_context=crypto_context)
-
-    encrypted_resource = EncryptedTable(table=dbResource, materials_provider=aws_kms_cmp,
-                                        attribute_actions=crypto_actions)
-
     if request.method == 'POST':
 
         userName = str(request.form['userName'])
@@ -150,13 +129,13 @@ def SubmitNewUser():
         passwordCheck = str(request.form['passwordCheck'])
         dateCreated = str(datetime.now().isoformat())
 
-        count = encrypted_resource.scan(crypto_config=custom_crypto_config)
+        count = CryptoItems.encrypted_resource.scan(crypto_config=CryptoItems.custom_crypto_config)
         userID = int(len(count['Items']) + 1)
 
         try:
-            response = encrypted_resource.query(
+            response = CryptoItems.encrypted_resource.query(
                 KeyConditionExpression=Key('UserName').eq(userName),
-                crypto_config=custom_crypto_config
+                crypto_config=CryptoItems.custom_crypto_config
             )
 
             items = response['Items']
@@ -172,7 +151,7 @@ def SubmitNewUser():
         except:
             try:
                 if password == passwordCheck:
-                    encrypted_resource.put_item(
+                    CryptoItems.encrypted_resource.put_item(
                         TableName='Users',
                         Item={'UserName': userName,
                               'UserID': userID,
@@ -180,7 +159,7 @@ def SubmitNewUser():
                               'UserEmail': userEmail,
                               'password': password
                               },
-                        crypto_config=custom_crypto_config)
+                        crypto_config=CryptoItems.custom_crypto_config)
 
                     flash('Success! Please Login.', 'Success!')
                     return redirect(url_for('login'))
@@ -201,6 +180,7 @@ def chatmain():
 @socketIO.on('message')
 def message(data):
     send(data)
+    emit('some-event', 'EVENT TEST')
 
 
 if __name__ == '__main__':
