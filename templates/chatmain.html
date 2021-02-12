@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat!</title>
+</head>
+<body>
+      <div id="display-area">
+
+
+      </div>
+
+      <div id="message-input">
+
+
+          <label for="message_box">Label Test</label><input type="text" id="message_box" placeholder="Type a Message" />
+      <input type="submit" id="send_message_button" value="Send Message"/>
+    </div>
+
+
+
+    <script src="{{  url_for('static', filename='node_modules/socket.io/client-dist/socket.io.js') }}"></script>
+    <script src="{{  url_for('static', filename='scripts/socketio.js') }}"></script>
+
+</body>
+</html>
