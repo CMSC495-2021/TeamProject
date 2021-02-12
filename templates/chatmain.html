@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block chat %}
+<div class="chatroom">
+    <section class="sideview">
+        <div>
+            <div>
+                <span class="avatar">RM</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><style>.cls-1{fill:#ffffff;}.cls-2{fill:#f0f0f0;}</style></defs><title/><g id="dots"><circle class="cls-1" cx="16" cy="16" r="3"/><circle class="cls-1" cx="16" cy="8" r="3"/><circle class="cls-1" cx="16" cy="24" r="3"/><path class="cls-2" d="M16,13v6a3,3,0,0,0,0-6Z"/><path class="cls-2" d="M16,5v6a3,3,0,0,0,0-6Z"/><path class="cls-2" d="M16,21v6a3,3,0,0,0,0-6Z"/></g></svg>
+            </div>
+        </div>
+        <hr/>
+        <h3>All Users</h3>
+        <ul>
+            <li class="online"> DJ </li>
+            <li class="online"> JD </li>
+            <li class="offline"> Phillip </li>
+            <ul>
+    </section>
+
+    <section class="mainview">
+
+        <section class="chat-view">
+            <div class="message received">
+                <p> Lorem ipsum dolor sit amet.</p>
+                <div>
+                    <span class="avatar">PB</span>
+                    <h4 class="username"> Phillip </h4>
+                </div>
+            </div>
+
+            <div class="message sent">
+                <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus auctor maximus eros et finibus. Donec vitae sapien ut massa aliquet vehicula. Sed pretium nibh a porta tempus. Nulla enim neque, scelerisque non congue nec, facilisis eget elit. Nam aliquam eleifend odio lacinia accumsan. Curabitur posuere vestibulum pulvinar. Sed quis rhoncus felis. Quisque facilisis elit justo, vehicula posuere libero suscipit in. Cras maximus feugiat tempus. Curabitur blandit eget orci eget convallis. Suspendisse ac mi ornare, sodales orci sed, tincidunt orci. Maecenas gravida neque quis orci molestie euismod. Aliquam tempus nec sapien id feugiat. Ut tortor turpis, tristique sit amet lacus non, convallis ornare purus. Cras eget tempor metus. Sed non interdum erat.</p>
+            </div>
+
+        </section>
+
+        <footer>
+            <input type="text" name="message" rows="2" cols="100" placeholder="Type a message ..."></textarea>
+            <button name="send" type="submit">
+                Send
+            </button>
+        </footer>
+    </section>
+</div>
+{% endblock %}

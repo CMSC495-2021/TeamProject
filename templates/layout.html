@@ -5,10 +5,13 @@
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/body.css')}}">
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/login.css')}}">
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/register.css')}}">    
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/chatmain.css')}}">   
     <main>
         {% block login %}
         {% endblock %}
         {% block register %}
+        {% endblock %}
+        {% block chat %}
         {% endblock %}
     </main>
 </html>
