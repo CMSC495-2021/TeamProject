@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<meta content="width=device-width, initial-scale=1" name="viewport" />
-<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/main.css')}}">
-<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/body.css')}}">
-<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/login.css')}}">
-<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/register.css')}}">    
-<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/chatmain.css')}}">   
+<head>
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/main.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/body.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/login.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/register.css')}}">    
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/chatmain.css')}}">   
+    <script src="{{  url_for('static', filename='node_modules/socket.io/client-dist/socket.io.js') }}"></script>
+    <script src="{{  url_for('static', filename='scripts/socketio.js') }}"></script>
+</head>
+<body>
     <main>
         {% block login %}
         {% endblock %}
@@ -14,4 +19,5 @@
         {% block chat %}
         {% endblock %}
     </main>
+</body>
 </html>

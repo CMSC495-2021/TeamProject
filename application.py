@@ -2,12 +2,12 @@ from datetime import datetime
 # boto 3
 import boto3
 from boto3.dynamodb.conditions import Key
-from dynamodb_encryption_sdk.encrypted import CryptoConfig
-# crypto imports
-from dynamodb_encryption_sdk.encrypted.table import EncryptedTable
-from dynamodb_encryption_sdk.identifiers import CryptoAction
-from dynamodb_encryption_sdk.material_providers.aws_kms import AwsKmsCryptographicMaterialsProvider
-from dynamodb_encryption_sdk.structures import AttributeActions, EncryptionContext
+# from dynamodb_encryption_sdk.encrypted import CryptoConfig
+# # crypto imports
+# from dynamodb_encryption_sdk.encrypted.table import EncryptedTable
+# from dynamodb_encryption_sdk.identifiers import CryptoAction
+# from dynamodb_encryption_sdk.material_providers.aws_kms import AwsKmsCryptographicMaterialsProvider
+# from dynamodb_encryption_sdk.structures import AttributeActions, EncryptionContext
 from flask import Flask, render_template, request, redirect, url_for, flash
 
 # socketIO/chat imports
