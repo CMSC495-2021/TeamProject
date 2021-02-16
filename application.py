@@ -76,28 +76,32 @@ def SubmitNewUser():
         userID = int(len(count['Items']) + 1)
 
         userScan = dbResource.scan(FilterExpression=Attr("UserName").ne(userName))
-
-        if not userScan:
-
-            if password == passwordCheck:
-
-                encrypted_resource.put_item(
-                    TableName='Users',
-                    Item={'UserID': userID,
-                          'DateCreated': dateCreated,
-                          'UserName': userName,
-                          'UserEmail': userEmail,
-                          'password': password
-                          },
-                    crypto_config=custom_crypto_config)
-
-                return render_template('login.html')
-
+        
+        regex = re.compile('[@_!#$%^&*()<>?/\|}{~:]')
+        
+        if(regex.search(string) == None):
+            
+            if not userScan:
+                
+                if password == passwordCheck:
+                    
+                    encrypted_resource.put_item(
+                        TableName='Users',
+                        Item={'UserID': userID,
+                              'DateCreated': dateCreated,
+                              'UserName': userName,
+                              'UserEmail': userEmail,
+                              'password': password
+                             },
+                        crypto_config=custom_crypto_config)
+                    
+                    return render_template('login.html')
+                else:
+                    return render_template('register.html')
             else:
                 return render_template('register.html')
         else:
             return render_template('register.html')
-
     return 'ERROR! Did not create a user!'
 
 
