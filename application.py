@@ -13,10 +13,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 # socketIO/chat imports
 from flask_socketio import SocketIO, send, emit
 
-# flask-login
-# from flask_login import LoginManager
-
-# from models import User
+from models import User
 
 # from livereload import Server commented this out so my IDE doesn't freak out. -DJ
 
@@ -26,9 +23,6 @@ app.secret_key = 'test_key'
 # SocketIO Initialization
 socketIO = SocketIO(app)
 
-# flask login
-#login = LoginManager(app)
-#login.init_app(app)
 
 
 # crypto items
@@ -99,6 +93,10 @@ def Authenticate():
                 try:
                     if password == pw:
                         flash('Success!', 'Success')
+                        #start user session here
+                        #use models.py user object
+                        #pass userName to object, and we will build the session from the profile.
+                        session = User.__init__(userName)
                         return redirect(url_for('chatmain'))
                     else:
                         flash('Bad UserName/Password', 'Failed')
