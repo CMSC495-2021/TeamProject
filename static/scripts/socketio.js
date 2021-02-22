@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     var socket = io.connect('http://' + document.domain + ':' + document.port);
 
-    document.querySelector('#send_message_button').onclick = () => {
-        socket.send(document.querySelector('#message_box').value);
+    document.querySelector('#send').onclick = () => {
+        socket.send(document.querySelector('#message').value);
         };
 
     socket.on('message', data => {
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const br = document.createElement('br');
         p.innerHTML = data;
 
-        document.querySelector('#display-area').append(p);
+        document.querySelector('#chat-view').append(p);
         });
 
     socket.on('some-event', data => {
