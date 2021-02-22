@@ -16,7 +16,7 @@ from flask_socketio import SocketIO, send, emit
 # flask-login
 from flask_login import LoginManager
 
-from models import User
+# from models import User
 
 # from livereload import Server commented this out so my IDE doesn't freak out. -DJ
 
@@ -33,13 +33,13 @@ login.init_app(app)
 
 # crypto items
 class CryptoItems:
-    aws_access_key_id = "ASIARSOHCYSCCAXFASUH"
-    aws_secret_access_key = "KlqN8k+WLUl4c1UVrTNybL0kbsnyBgEX4nDauEeU"
-    aws_session_token = "FwoGZXIvYXdzEOL//////////wEaDMOwDF4Rgj6z63GQPSLIAbXahFeqCqygvrwmKOann0cTXigG+HZX/K" \
-                        "U5u67VZwhM8MMCRmpFKdcp2HuKPDNvqkRMg/65OWFXtgLzLIZ3P3oOhRHEtmPnTG0V+NM8EN5BbwVNL9pjPFu/j" \
-                        "zGDIyynuZzz0IYUHlh7AO59+iqmNlpyMSOfLPeZsBQ7PvRNnHITddvBkyS8v7K5sJm0NmsDLxPWb7lFRn4K6e" \
-                        "2uWyl9y1xw5J8a9iuKnejppYQripOsXEONU4gBz/3xDhxlenmt8Is+zXP+lT4EKKiel4EGMi1H/jeDdRt0XciK9" \
-                        "NiHyhbWisFUgx1tvfUDg1loNNrE8PJQs88/Wb5mQWNvXCw="
+    aws_access_key_id = "ASIARSOHCYSCJO2WUGTG"
+    aws_secret_access_key = "SQ3ntnnKAAcRJ8EgThQFeI8nbvU6bxr57d5OVaP4"
+    aws_session_token = "FwoGZXIvYXdzENL//////////wEaDL36/A09FZmEqIhbmiLIAbNvMEDoY02Um/ENYDuh7KKlo2ZxWY5W1oh1I" \
+                        "aWmbvk3FOz/AADef/ANa+9sTfKT8AfH5Wvpgzk7C0E9WLQpaaQyrVMfVsMLI4JHZsIjhHD4j/FTbJPQ06QeGWSk" \
+                        "Ieo7DWZA6GpkKEB5NgOutkWhOv5I851gTMWXe8tLAjvhpX0GMqYTUolkAvN5AztADB+xmsUkUKM2dydrBRLxIM3" \
+                        "DFTvpYzTMgpME683Akb1Fe2ijk2Q8IKLpUM8fgCGfSK5UpnCAxW+NJIGkKPPwy4EGMi127za+3+WeLxX0eLwOIk" \
+                        "DM8CxCZSCQtaLHlOdT1fFMiUTJ+xuYgGdo2/ArLjA="
 
     dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                                 aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
