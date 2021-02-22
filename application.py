@@ -14,7 +14,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_socketio import SocketIO, send, emit
 
 # flask-login
-from flask_login import LoginManager
+# from flask_login import LoginManager
 
 # from models import User
 
@@ -27,8 +27,8 @@ app.secret_key = 'test_key'
 socketIO = SocketIO(app)
 
 # flask login
-login = LoginManager(app)
-login.init_app(app)
+#login = LoginManager(app)
+#login.init_app(app)
 
 
 # crypto items
