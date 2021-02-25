@@ -42,13 +42,37 @@ h3.allUsers{
     background: linear-gradient(to top, #7e08e6, #e4af69)
 }
 
-.sideview svg{
-    width: 60px;
-    right: 0;
-    top: -1rem;
-    position: absolute;
-    transform: rotate(90deg);
+.sideview .meatballs{
+    width: 100%;
     cursor: pointer;
+}
+
+.sideview .subMenu{
+  visibility: hidden;
+  border: 1px solid white;
+  padding: 5px 0 10px 10px;
+  width: fit-content;
+  float: right;
+  margin-top: 10px;
+  border-top-left-radius: 100%;
+  border-bottom-left-radius: 100%;
+  border-bottom-right-radius: 100%;
+  border-top-right-radius: 10%;
+  background: rgba(255,255,255,.75);
+  color: #7e08e6;
+  text-decoration: underline;
+}
+
+.subMenu .option{
+  cursor: pointer;
+}
+
+.sideview .meatballs svg{
+  right: 0;
+  top: -2rem;
+  width: 60px;
+  position: absolute;
+  transform: rotate(90deg);
 }
 
 .sideview ul li.online::before{
