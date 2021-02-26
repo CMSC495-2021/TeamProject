@@ -76,11 +76,13 @@ def index():
 def login():
     return render_template("login.html")
 
-
 @app.route('/register', methods=["POST", "GET"])
 def register():
     return render_template('register.html')
 
+@app.route('/profile', methods=["GET", "POST"])
+def profile():
+    return render_template("profile.html")
 
 @app.route('/Authenticate', methods=["POST", "GET"])
 def Authenticate():
@@ -176,11 +178,21 @@ def SubmitNewUser():
 def chatmain():
     return render_template('chatmain.html')
 
-@app.route("/testUrl", methods=["GET","POST"])
-def testUrl():
-    error='Woopsie Daisy!'
-    return render_template("testUrl.html", error=error)
-    
+@app.route('/testlogin', methods=["GET", "POST"])
+def testlogin():
+    return render_template("testlogin.html")
+
+@app.route('/testAuthenticate', methods=["POST", "GET"])
+def testAuthenticate():
+    if request.method == "POST":
+        userName = str(request.form['username'])
+        password = str(request.form['password'])
+        if userName == "jd":
+            flash('Bad UserName/Password', 'Failed')
+            return redirect(url_for('testlogin'))
+        else:
+            return redirect(url_for('chatmain'))
+
 
 # SocketIO Event Handler
 @socketIO.on('message')

@@ -1,4 +1,11 @@
 main{
     color: black;
-
 }
+
+.alert-Failed {
+    padding: 12px;
+    border-radius: 3px;
+    font-size: 1.3rem;
+    margin-bottom: 16px;
+    color: red;
+  }
