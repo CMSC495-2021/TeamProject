@@ -175,6 +175,11 @@ def SubmitNewUser():
 def chatmain():
     return render_template('chatmain.html')
 
+@app.route("/testUrl", methods=["GET","POST"])
+def testUrl():
+    error='Woopsie Daisy!'
+    return render_template("testUrl.html", error=error)
+    
 
 # SocketIO Event Handler
 @socketIO.on('message')

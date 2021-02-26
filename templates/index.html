@@ -2,7 +2,9 @@
 
 {% block main %}
     <ul id="messages"></ul>
-
+    {% if error %}
+        <h1>ERROR!</h1>
+    {% endif %}
     <textarea id="chatWindow" name="chatWindow" rows="60" cols="75">Just a Test Area!</textarea>
     <label for="myMessage"></label><input type="text" id="myMessage">
     <button id="sendbutton">Send</button>
