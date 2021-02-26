@@ -32,37 +32,38 @@ socketIO = SocketIO(app)
 
 
 # crypto items
-class CryptoItems:
-    aws_access_key_id = "ASIARSOHCYSCHZZKMU5V"
-    aws_secret_access_key = "torpnKtlgxYHkE1Ttvs7m6/YEG3MXLtKkBglMpBP"
-    aws_session_token = "FwoGZXIvYXdzEJP//////////wEaDC6GDhYRwlX0XOdq9yLIAbwt/oBru7qz5RVKSVlSksPuFwPntoikgxrV" \
-                        "xcv1HHYa1nCZYcP4iG8RUVUMK9DlNDC0XZBPkJZNmIZ/n/N1GsAw/tbgSRdUHx7p/lzomddRZYaJ4EykKS2LFKldVb" \
-                        "PQuF2ak20HU0Tx2ujRRr+CMF0VdWfTAx0y5Jxc3PdWGe56x2agbpE2/U2BrVxzkUsAxG5gf0T5Yr0E39om+BUH39VD" \
-                        "INAkLNh9fWjzONzxIF8InCJg3cGBRpEXLYlShJ4JQI90n7lAJyxIKJOg9oEGMi3FOKH5Xw2eBCQCvOyiAG+CKQwGqA" \
-                        "ALOMmnrV1T+dZT1IXQYNfM2xCpoWugNbE="
+# class CryptoItems:
+#     aws_access_key_id = "ASIARSOHCYSCN7AHG5X2"
+#     aws_secret_access_key = "qmFfarnCi7K4ON37Jux+EuUJn5hjlyrOdvzrOmY2"
+#     aws_session_token = "FwoGZXIvYXdzEPv//////////wEaDNkZQxRhOvS2k8GCLCLIASjGAKe7" \
+#                         "AQYzNg0VPfz5aMJdm9BVT/fEY9NoSQkjkZaCK4gciMrO6WeJ6p2Ehkexu1GKwMnlfCI9h2BB" \
+#                         "wZmt65d/YZAffSt+SVrVbhm5Qhj82K0+JokaH5yD7irsJ1cHVLMe45YC5s6V5p0melYlFm0qy" \
+#                         "wmoYUjRg+FTn3uK6nfT9KrlYubWL5PMx8AHI5BHr9deIuVZ6uBXTr75631WSVd9hjgFpdE+SB" \
+#                         "Es58RBKai3WN6px2Qs2AdXPJ0E1PzjF0dgPVeB7sZEKOCB1YEGMi310efByoaL/P18v/s8BJQW" \
+#                         "hgqHHDBQI1RXdb4k6/m6ivWe94D4cD+eNewO/ac="
 
-    dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
-                                aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
-                                region_name='us-east-1').Table('Users')
+#     dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
+#                                 aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
+#                                 region_name='us-east-1').Table('Users')
 
-    # crypto key and material provider
-    aws_cmk_id = 'arn:aws:kms:us-east-1:108328567940:key/ac31eb77-1a66-452f-9744-8aec26b9aa74'
-    aws_kms_cmp = AwsKmsCryptographicMaterialsProvider(key_id=aws_cmk_id)
+#     # crypto key and material provider
+#     aws_cmk_id = 'arn:aws:kms:us-east-1:108328567940:key/ac31eb77-1a66-452f-9744-8aec26b9aa74'
+#     aws_kms_cmp = AwsKmsCryptographicMaterialsProvider(key_id=aws_cmk_id)
 
-    # how the crypto is applied to attributes
-    crypto_actions = AttributeActions(
-        default_action=CryptoAction.DO_NOTHING,
-        attribute_actions={
-            'password': CryptoAction.ENCRYPT_AND_SIGN})
+#     # how the crypto is applied to attributes
+#     crypto_actions = AttributeActions(
+#         default_action=CryptoAction.DO_NOTHING,
+#         attribute_actions={
+#             'password': CryptoAction.ENCRYPT_AND_SIGN})
 
-    crypto_context = EncryptionContext(table_name='Users')
+#     crypto_context = EncryptionContext(table_name='Users')
 
-    custom_crypto_config = CryptoConfig(materials_provider=aws_kms_cmp,
-                                        attribute_actions=crypto_actions,
-                                        encryption_context=crypto_context)
+#     custom_crypto_config = CryptoConfig(materials_provider=aws_kms_cmp,
+#                                         attribute_actions=crypto_actions,
+#                                         encryption_context=crypto_context)
 
-    encrypted_resource = EncryptedTable(table=dbResource, materials_provider=aws_kms_cmp,
-                                        attribute_actions=crypto_actions)
+#     encrypted_resource = EncryptedTable(table=dbResource, materials_provider=aws_kms_cmp,
+#                                         attribute_actions=crypto_actions)
 
 
 @app.route('/index', methods=["GET"])
@@ -89,26 +90,26 @@ def Authenticate():
             userName = str(request.form['username'])
             password = str(request.form['password'])
 
-            response = CryptoItems.encrypted_resource.query(
-                KeyConditionExpression=Key('UserName').eq(userName),
-                crypto_config=CryptoItems.custom_crypto_config
-            )
-            try:
-                items = response['Items']
-                pw = items[0]['password']
-                try:
-                    if password == pw:
-                        flash('Success!', 'Success')
-                        return redirect(url_for('chatmain'))
-                    else:
-                        flash('Bad UserName/Password', 'Failed')
-                        return redirect(url_for('login'))
-                except:
-                    flash('Bad UserName/Password', 'Failed')
-                    return redirect(url_for('login'))
-            except:
-                flash('Bad UserName/Password', 'Failed')
-                return redirect(url_for('login'))
+            # response = CryptoItems.encrypted_resource.query(
+            #     KeyConditionExpression=Key('UserName').eq(userName),
+            #     crypto_config=CryptoItems.custom_crypto_config
+            # )
+            # try:
+            #     items = response['Items']
+            #     pw = items[0]['password']
+            #     try:
+            #         if password == pw:
+            #             flash('Success!', 'Success')
+            #             return redirect(url_for('chatmain'))
+            #         else:
+            #             flash('Bad UserName/Password', 'Failed')
+            #             return redirect(url_for('login'))
+            #     except:
+            #         flash('Bad UserName/Password', 'Failed')
+            #         return redirect(url_for('login'))
+            # except:
+            #     flash('Bad UserName/Password', 'Failed')
+            #     return redirect(url_for('login'))
 
         except:
             flash('Bad UserName/Password', 'Failed')
@@ -129,46 +130,46 @@ def SubmitNewUser():
         passwordCheck = str(request.form['passwordCheck'])
         dateCreated = str(datetime.now().isoformat())
 
-        count = CryptoItems.encrypted_resource.scan(crypto_config=CryptoItems.custom_crypto_config)
-        userID = int(len(count['Items']) + 1)
+        # count = CryptoItems.encrypted_resource.scan(crypto_config=CryptoItems.custom_crypto_config)
+        # userID = int(len(count['Items']) + 1)
 
-        try:
-            response = CryptoItems.encrypted_resource.query(
-                KeyConditionExpression=Key('UserName').eq(userName),
-                crypto_config=CryptoItems.custom_crypto_config
-            )
+        # try:
+        #     response = CryptoItems.encrypted_resource.query(
+        #         KeyConditionExpression=Key('UserName').eq(userName),
+        #         crypto_config=CryptoItems.custom_crypto_config
+        #     )
 
-            items = response['Items']
-            uniqueUser = items[0]['UserName']
+        #     items = response['Items']
+        #     uniqueUser = items[0]['UserName']
 
-            try:
-                if uniqueUser == userName:
-                    flash('Bad User Already Exists!', 'Failed')
-                    return redirect(url_for('register'))
-            except:
-                flash('Bad User Already Exists!', 'Failed')
-                return redirect(url_for('register'))
-        except:
-            try:
-                if password == passwordCheck:
-                    CryptoItems.encrypted_resource.put_item(
-                        TableName='Users',
-                        Item={'UserName': userName,
-                              'UserID': userID,
-                              'DateCreated': dateCreated,
-                              'UserEmail': userEmail,
-                              'password': password
-                              },
-                        crypto_config=CryptoItems.custom_crypto_config)
+        #     try:
+        #         if uniqueUser == userName:
+        #             flash('Bad User Already Exists!', 'Failed')
+        #             return redirect(url_for('register'))
+        #     except:
+        #         flash('Bad User Already Exists!', 'Failed')
+        #         return redirect(url_for('register'))
+        # except:
+        #     try:
+        #         if password == passwordCheck:
+        #             CryptoItems.encrypted_resource.put_item(
+        #                 TableName='Users',
+        #                 Item={'UserName': userName,
+        #                       'UserID': userID,
+        #                       'DateCreated': dateCreated,
+        #                       'UserEmail': userEmail,
+        #                       'password': password
+        #                       },
+        #                 crypto_config=CryptoItems.custom_crypto_config)
 
-                    flash('Success! Please Login.', 'Success!')
-                    return redirect(url_for('login'))
-                else:
-                    flash('Passwords Do Not Match!', 'Failed')
-                    return redirect(url_for('register'))
-            except:
-                flash('Passwords Do Not Match!', 'Failed')
-                return redirect(url_for('register'))
+        #             flash('Success! Please Login.', 'Success!')
+        #             return redirect(url_for('login'))
+        #         else:
+        #             flash('Passwords Do Not Match!', 'Failed')
+        #             return redirect(url_for('register'))
+        #     except:
+        #         flash('Passwords Do Not Match!', 'Failed')
+        #         return redirect(url_for('register'))
 
 
 @app.route("/chatmain", methods=["GET", "POST"])
