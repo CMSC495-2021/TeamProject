@@ -33,13 +33,13 @@ socketIO = SocketIO(app)
 
 # crypto items
 class CryptoItems:
-    aws_access_key_id = "ASIARSOHCYSCJO2WUGTG"
-    aws_secret_access_key = "SQ3ntnnKAAcRJ8EgThQFeI8nbvU6bxr57d5OVaP4"
-    aws_session_token = "FwoGZXIvYXdzENL//////////wEaDL36/A09FZmEqIhbmiLIAbNvMEDoY02Um/ENYDuh7KKlo2ZxWY5W1oh1I" \
-                        "aWmbvk3FOz/AADef/ANa+9sTfKT8AfH5Wvpgzk7C0E9WLQpaaQyrVMfVsMLI4JHZsIjhHD4j/FTbJPQ06QeGWSk" \
-                        "Ieo7DWZA6GpkKEB5NgOutkWhOv5I851gTMWXe8tLAjvhpX0GMqYTUolkAvN5AztADB+xmsUkUKM2dydrBRLxIM3" \
-                        "DFTvpYzTMgpME683Akb1Fe2ijk2Q8IKLpUM8fgCGfSK5UpnCAxW+NJIGkKPPwy4EGMi127za+3+WeLxX0eLwOIk" \
-                        "DM8CxCZSCQtaLHlOdT1fFMiUTJ+xuYgGdo2/ArLjA="
+    aws_access_key_id = "ASIARSOHCYSCHZZKMU5V"
+    aws_secret_access_key = "torpnKtlgxYHkE1Ttvs7m6/YEG3MXLtKkBglMpBP"
+    aws_session_token = "FwoGZXIvYXdzEJP//////////wEaDC6GDhYRwlX0XOdq9yLIAbwt/oBru7qz5RVKSVlSksPuFwPntoikgxrV" \
+                        "xcv1HHYa1nCZYcP4iG8RUVUMK9DlNDC0XZBPkJZNmIZ/n/N1GsAw/tbgSRdUHx7p/lzomddRZYaJ4EykKS2LFKldVb" \
+                        "PQuF2ak20HU0Tx2ujRRr+CMF0VdWfTAx0y5Jxc3PdWGe56x2agbpE2/U2BrVxzkUsAxG5gf0T5Yr0E39om+BUH39VD" \
+                        "INAkLNh9fWjzONzxIF8InCJg3cGBRpEXLYlShJ4JQI90n7lAJyxIKJOg9oEGMi3FOKH5Xw2eBCQCvOyiAG+CKQwGqA" \
+                        "ALOMmnrV1T+dZT1IXQYNfM2xCpoWugNbE="
 
     dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                                 aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
