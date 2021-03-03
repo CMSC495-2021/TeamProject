@@ -32,8 +32,12 @@
     </svg>
 
     <h1 class="register">Register</h1>
+    {% for category, message in get_flashed_messages(with_categories=True) %}
+      <p class="alert-{{category}}">{{ message }}</p>
+    {% endfor %}
       <input class="register" type="text" name="userName" placeholder="User Name" />
       <input class="register" type="email" name="userEmail" placeholder="Email" />
+      <input class="profile" type="text" name="userInitials" placeholder="Intiials" maxlength="2"/>
       <input class="register" type="password" name="password" placeholder="Password" />
       <input
         class="register"

@@ -31,10 +31,15 @@
       </g>
     </svg>
     <h1 class="profile">Profile</h1>
+    {% for category, message in get_flashed_messages(with_categories=True) %}
+      <p class="alert-{{category}}">{{ message }}</p>
+    {% endfor %}
     <label class="profile" for="userName">User Name</label>
     <input class="profile" type="text" name="userName" id="userName" placeholder="" value="{{ userName }}" />
     <label class="profile" for="userEmail">Email Address</label>
     <input class="profile" type="email" name="userEmail" id="userEmail" placeholder="Email" value="{{ userEmail }}"/>
+    <label class="profile" for="initials">Initials</label>
+    <input class="profile" type="text" name="userInitials" id="userInitials" placeholder="Intiials" value="{{ userInitials }}" maxlength="2"/>
     <label class="profile" for="password">Password</label>
     <input class="profile" type="password" name="password" id="password" placeholder="Password" value="{{ password }}"/>
     <label class="profile" for="passwordCheck">Verify Password</label>
