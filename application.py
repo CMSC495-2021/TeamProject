@@ -10,36 +10,36 @@ from dynamodb_encryption_sdk.material_providers.aws_kms import AwsKmsCryptograph
 from dynamodb_encryption_sdk.structures import AttributeActions, EncryptionContext
 from flask import Flask, render_template, request, redirect, url_for, flash
 
-# socketIO/chat imports
-from flask_socketio import SocketIO, send, emit
+# socketio/chat imports
+from flask_socketio import SocketIO, send
+
 
 # flask-login
 # from flask_login import LoginManager
 
 # from models import User
 
-# from livereload import Server commented this out so my IDE doesn't freak out. -DJ
-
 application = app = Flask(__name__, static_folder='static', static_url_path='/static')
-app.secret_key = 'test_key'
+app.config['SECRET_KEY'] = 'test_key'
 
 # SocketIO Initialization
-socketIO = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
+
 
 # flask login
-#login = LoginManager(app)
-#login.init_app(app)
+# login = LoginManager(app)
+# login.init_app(app)
 
 
 # crypto items
 class CryptoItems:
-    aws_access_key_id = "ASIARSOHCYSCHZZKMU5V"
-    aws_secret_access_key = "torpnKtlgxYHkE1Ttvs7m6/YEG3MXLtKkBglMpBP"
-    aws_session_token = "FwoGZXIvYXdzEJP//////////wEaDC6GDhYRwlX0XOdq9yLIAbwt/oBru7qz5RVKSVlSksPuFwPntoikgxrVxcv1HHYa" \
-                        "1nCZYcP4iG8RUVUMK9DlNDC0XZBPkJZNmIZ/n/N1GsAw/tbgSRdUHx7p/lzomddRZYaJ4EykKS2LFKldVbPQuF2ak20" \
-                        "HU0Tx2ujRRr+CMF0VdWfTAx0y5Jxc3PdWGe56x2agbpE2/U2BrVxzkUsAxG5gf0T5Yr0E39om+BUH39VDINAkLN" \
-                        "h9fWjzONzxIF8InCJg3cGBRpEXLYlShJ4JQI90n7lAJyxIKJOg9oEGMi3FOKH5Xw2eBCQCvOyiAG+CKQwGqAALOM" \
-                        "mnrV1T+dZT1IXQYNfM2xCpoWugNbE="
+    aws_access_key_id = "ASIARSOHCYSCENWLZ75P"
+    aws_secret_access_key = "YyEwlB/SdC9QoWXaKFXZSruapmydVwzIlWMyi7mC"
+    aws_session_token = "FwoGZXIvYXdzEKf//////////wEaDMsZIpAu1oFSN9axNSLIASSZQF+SVorTRD/R/OdCKQ0f6R8NGTmqP" \
+                        "Y2NJaENcDE4hi7uCGyXD40+GmX1Flgy5CUXcmZ63ZEOSfPwmS8RWud+44NNZeKvyXbqI9NpGAALgr8O6ZQ3Bq8t152" \
+                        "DvwNZQZAXM4NOFLOMORUnZEhqkDi/zZcJctuuuv4CxsMUSzJ2rvTf0XrqapMjxJTX4Q42g2T5mQFcj0E4vOuDM6mhDQ" \
+                        "6PiyyTfvF7Yw9N84JL2KANS5LSpQHHPEb5DgdhCdFF53GnhAZsgn3/KMzd+oEGMi2lZfuZcohU56IH1LHx2ew2fgyq/" \
+                        "iPFf9C1Fi73zyX+weYaWoG+muXFBuxBSvU="
 
     dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                                 aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
@@ -65,11 +65,7 @@ class CryptoItems:
                                         attribute_actions=crypto_actions)
 
 
-@app.route('/index', methods=["GET"])
-def index():
-    return render_template("index.html")
-
-
+# Page Routes
 @app.route('/login', methods=["GET", "POST"])
 @app.route('/', methods=["GET", "POST"])
 def login():
@@ -81,6 +77,17 @@ def register():
     return render_template('register.html')
 
 
+@app.route("/chatmain", methods=["GET", "POST"])
+def chatmain():
+    return render_template('chatmain.html')
+
+# Test Page for chat backend -- delete after integration.
+@app.route("/testchat", methods=["GET", "POST"])
+def testchat():
+    return render_template('testchat.html')
+
+
+# Authenticate and Register Methods
 @app.route('/Authenticate', methods=["POST", "GET"])
 def Authenticate():
     if request.method == "POST":
@@ -171,24 +178,12 @@ def SubmitNewUser():
                 return redirect(url_for('register'))
 
 
-@app.route("/chatmain", methods=["GET", "POST"])
-def chatmain():
-    return render_template('chatmain.html')
-
-
-# SocketIO Event Handler
-@socketIO.on('message')
+# SocketIO Event Handlers
+@socketio.on('message')
 def message(data):
-    send(data)
-    emit('some-event', 'EVENT TEST')
+    send(data, broadcast=True)
+    print("Message RX by Server: " + data)
 
 
 if __name__ == '__main__':
-    socketIO.run(app)
-    """
-    Use the following two lines to locally run the application with livereload (view changes as you make them)
-    You will also need to comment out the app.run()
-    
-    server = Server(app.wsgi_app)
-    server.serve()
-    """
+    socketio.run(app, debug="true")

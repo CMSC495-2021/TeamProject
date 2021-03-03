@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<nav>
+
+</nav>
+<div id="main-section">
+    <nav id="sidebar">
+
+    </nav>
+    <div id="right-pannel">
+        <div id="message-area">
+            <input type="text" id="user-message" placeholder="Type Here" autocomplete="off">
+            <button type ="button" id="send-message">Send</button>
+
+
+        </div>
+    </div>
+</div>
+
+
+<script src="{{ url_for('static', filename='node_modules/socket.io/client-dist/socket.io.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts/test.js') }}"></script>
+
+</body>
+</html>
