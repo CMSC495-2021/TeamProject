@@ -19,9 +19,12 @@ $(document).ready(function() {
     });
 
     // bound to send button to send a brodcasted message from input to app
+    // If nothing in input, don't broadcast
     $('form#chatSend').submit(function(event) {
-        socket.emit('broadcast_event', {data: $('#message_data').val()});
-        $(' #message_data ').val('').focus();
+        if ($('#message_data').val()){
+            socket.emit('broadcast_event', {data: $('#message_data').val()});
+            $(' #message_data ').val('').focus();
+        }
         return false;
     });
     
