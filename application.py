@@ -37,6 +37,7 @@ socketIO = SocketIO(app)
 LOG = create_logger(application)
 
 # crypto items
+#Try-except set up to bypass crypto issues when key is expired
 class CryptoItems:
     aws_access_key_id = "ASIARSOHCYSCN7AHG5X2"
     aws_secret_access_key = "qmFfarnCi7K4ON37Jux+EuUJn5hjlyrOdvzrOmY2"
@@ -47,91 +48,102 @@ class CryptoItems:
                         "Es58RBKai3WN6px2Qs2AdXPJ0E1PzjF0dgPVeB7sZEKOCB1YEGMi310efByoaL/P18v/s8BJQW" \
                         "hgqHHDBQI1RXdb4k6/m6ivWe94D4cD+eNewO/ac="
 
-    dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
-                                aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
-                                region_name='us-east-1').Table('Users')
+    try:
+        dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
+                                    aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
+                                    region_name='us-east-1').Table('Users')
 
-    # crypto key and material provider
-    aws_cmk_id = 'arn:aws:kms:us-east-1:108328567940:key/ac31eb77-1a66-452f-9744-8aec26b9aa74'
-    aws_kms_cmp = AwsKmsCryptographicMaterialsProvider(key_id=aws_cmk_id)
+        # crypto key and material provider
+        aws_cmk_id = 'arn:aws:kms:us-east-1:108328567940:key/ac31eb77-1a66-452f-9744-8aec26b9aa74'
+        aws_kms_cmp = AwsKmsCryptographicMaterialsProvider(key_id=aws_cmk_id)
 
-    # how the crypto is applied to attributes
-    crypto_actions = AttributeActions(
-        default_action=CryptoAction.DO_NOTHING,
-        attribute_actions={
-            'password': CryptoAction.ENCRYPT_AND_SIGN})
+        # how the crypto is applied to attributes
+        crypto_actions = AttributeActions(
+            default_action=CryptoAction.DO_NOTHING,
+            attribute_actions={
+                'password': CryptoAction.ENCRYPT_AND_SIGN})
 
-    crypto_context = EncryptionContext(table_name='Users')
+        crypto_context = EncryptionContext(table_name='Users')
 
-    custom_crypto_config = CryptoConfig(materials_provider=aws_kms_cmp,
-                                        attribute_actions=crypto_actions,
-                                        encryption_context=crypto_context)
+        custom_crypto_config = CryptoConfig(materials_provider=aws_kms_cmp,
+                                            attribute_actions=crypto_actions,
+                                            encryption_context=crypto_context)
 
-    encrypted_resource = EncryptedTable(table=dbResource, materials_provider=aws_kms_cmp,
-                                        attribute_actions=crypto_actions)
+        encrypted_resource = EncryptedTable(table=dbResource, materials_provider=aws_kms_cmp,
+                                            attribute_actions=crypto_actions)
+    except:
+        #FIXME TEST DB for session testing... DO NOT IMPLEMENT IN PROD!!!
+        users = {
+            "jdmoore": {
+                "username": "jdmoore",
+                "email": "jmoore249@example.com",
+                "password": "example",
+                "initials": "JD"
+            },
+            "rmedley": {
+                "username": "rmedley",
+                "email": "rmedley@example.com",
+                "password": "example",
+                "initials": "RM"
+            },
+            "dji": {
+                "username": "dji",
+                "email": "dji@example.com",
+                "password": "example",
+                "initials": "DJ"
+            },
+            "pbarz": {
+                "username": "pbarz",
+                "email": "pbarz@example.com",
+                "password": "example",
+                "initials": "PB"
+            }
+        }
+        #END TEST DB
 
-#FIXME TEST DB for session testing... DO NOT IMPLEMENT IN PROD!!!
-users = {
-    "jdmoore": {
-        "username": "jdmoore",
-        "email": "jmoore249@example.com",
-        "password": "example",
-        "initials": "JD"
-    },
-    "rmedley": {
-        "username": "rmedley",
-        "email": "rmedley@example.com",
-        "password": "example",
-        "initials": "RM"
-    },
-    "dji": {
-        "username": "dji",
-        "email": "dji@example.com",
-        "password": "example",
-        "initials": "DJ"
-    },
-    "pbarz": {
-        "username": "pbarz",
-        "email": "pbarz@example.com",
-        "password": "example",
-        "initials": "PB"
-    }
-}
-#END TEST DB
 
 @app.route('/login', methods=["GET", "POST"])
 @app.route('/index', methods=["GET"])
 @app.route('/', methods=["GET", "POST"])
 def login():
-    return render_template("login.html")
+    if not CryptoItems.users:
+        return render_template("login.html")
+    else:
+        flash('Temporary DB in use', 'Failed')
+        return render_template("login.html")
 
 @app.route('/register', methods=["POST", "GET"])
 def register():
     return render_template('register.html')
 
-#TODO Restrict to auth'd user
+#TODO Restrict to auth'd user in session
 @app.route('/editProfile', methods=["GET","POST"])
 def profile():
+
+    #FIXME Remove test db for prod
     # Get user info from test db
-    user = users[session['USERNAME']]
+    user = CryptoItems.users[session['USERNAME']]
     userName = user['username']
     userEmail = user['email']
     userinitials = user['initials']
     password = user['password']
     passwordCheck = user['password']
     LOG.info('userName: '+userName)
+    # End remove test db for prod
+    
     #on POST update user info in DB, on error flash error and make no change  
     if request.method == "POST":
         req = request.form
         userName = str(req['userName'])
         userEmail = str(req['userEmail'])
         password = str(req['password'])
-        #TODO: Add initials
+        userInitials = str(req['userInitials'])
         passwordCheck = str(req['passwordCheck'])
         dateUpdated = str(datetime.now().isoformat())
 
-        # save user to db from form
-        # Re-load session with new user object
+        #TODO Save user to db from form
+        #TODO If error flash error
+        #TODO Re-load session with new user object
     
     return render_template("profile.html",
                             userName = userName,
@@ -149,43 +161,48 @@ def Authenticate():
             username = str(req['username'])
             password = str(req['password'])
 
-            # AUTH AGAINST FAKE DB USED FOR TESTING
-            if not username in users:
-                flash('Bad UserName/Password', 'Failed')
-                return redirect(url_for('login'))
-            else:
-                user = users[username]
+            # FIXME Remove if/else for production
+            if CryptoItems.users:
+                # AUTH AGAINST FAKE DB USED FOR TESTING
+                if not username in CryptoItems.users:
+                    flash('Bad UserName/Password', 'Failed')
+                    return redirect(url_for('login'))
+                else:
+                    user = CryptoItems.users[username]
 
-            if not password == user["password"]:
-                flash('Bad UserName/Password', 'Failed')
-                return redirect(url_for('login'))
+                if not password == user["password"]:
+                    flash('Bad UserName/Password', 'Failed')
+                    return redirect(url_for('login'))
+                else:
+                    session["USERNAME"] = user["username"]
+                    session["INITIALS"] = user["initials"]
+                    return redirect(url_for('chatmain'))
             else:
-                session["USERNAME"] = user["username"]
-                session["INITIALS"] = user["initials"]
-                return redirect(url_for('chatmain'))
+            # END Remove if/else for production
 
-            response = CryptoItems.encrypted_resource.query(
-                KeyConditionExpression=Key('UserName').eq(username),
-                crypto_config=CryptoItems.custom_crypto_config
-            )
-            try:
-                items = response['Items']
-                pw = items[0]['password']
+                #Original db call for user KEEP and un-indent!
+                response = CryptoItems.encrypted_resource.query(
+                    KeyConditionExpression=Key('UserName').eq(username),
+                    crypto_config=CryptoItems.custom_crypto_config
+                )
                 try:
-                    if password == pw:
-                        flash('Success!', 'Success')
-                        return redirect(url_for('chatmain'))
-                        #Load user obj into session for use...
-                    else:
+                    items = response['Items']
+                    pw = items[0]['password']
+                    try:
+                        if password == pw:
+                            flash('User created!', 'Success')
+                            return redirect(url_for('chatmain'))
+                            #TODO Load user into session for use...
+                        else:
+                            flash('Bad UserName/Password', 'Failed')
+                            return redirect(url_for('login'))
+                    except:
                         flash('Bad UserName/Password', 'Failed')
                         return redirect(url_for('login'))
                 except:
                     flash('Bad UserName/Password', 'Failed')
                     return redirect(url_for('login'))
-            except:
-                flash('Bad UserName/Password', 'Failed')
-                return redirect(url_for('login'))
-
+                #End original call
         except:
             flash('Bad UserName/Password', 'Failed')
             return redirect(url_for('login'))
@@ -201,7 +218,7 @@ def SubmitNewUser():
         req = request.form
         userName = str(req['userName'])
         userEmail = str(req['userEmail'])
-        #TODO: Add initials
+        userInitials = str(req['userInitials'])
         password = str(req['password'])
         passwordCheck = str(req['passwordCheck'])
         dateCreated = str(datetime.now().isoformat())
@@ -209,6 +226,11 @@ def SubmitNewUser():
         count = CryptoItems.encrypted_resource.scan(crypto_config=CryptoItems.custom_crypto_config)
         userID = int(len(count['Items']) + 1)
 
+
+        #Why is this check set up as a try-except?
+        #How does the password check fire if the username
+        #check succeeds and skips the except?
+        #Haven't actually tested since keys required for DB
         try:
             response = CryptoItems.encrypted_resource.query(
                 KeyConditionExpression=Key('UserName').eq(userName),
@@ -218,12 +240,13 @@ def SubmitNewUser():
             items = response['Items']
             uniqueUser = items[0]['UserName']
 
+            #Same question here about wrapping the if in a try-except...
             try:
                 if uniqueUser == userName:
-                    flash('Bad User Already Exists!', 'Failed')
+                    flash('User Already Exists!', 'Failed')
                     return redirect(url_for('register'))
             except:
-                flash('Bad User Already Exists!', 'Failed')
+                flash('Error checking username!', 'Failed')
                 return redirect(url_for('register'))
         except:
             try:
@@ -232,6 +255,7 @@ def SubmitNewUser():
                         TableName='Users',
                         Item={'UserName': userName,
                               'UserID': userID,
+                              #TODO Add 'UserInitials': userInitials,
                               'DateCreated': dateCreated,
                               'UserEmail': userEmail,
                               'password': password
@@ -258,7 +282,7 @@ def chatmain():
                             username = username, 
                             initials = initials,)
 
-# SocketIO Event Handler
+# SocketIO Event Handler template
 # @socketIO.on('message')
 # def message(data):
 #     send(data)
@@ -282,6 +306,7 @@ def broadcast_message(message):
 #FIXME This isn't working yet for some reason it immediately reconnects
 #probably need to investigate the disconnect method or tie the req
 #to the app's user session kill...
+#Maybe look into flask_login as well
 @socketIO.on('disconnect_event', namespace='/chatmain')
 def disconnect_request():
     @copy_current_request_context
