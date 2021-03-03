@@ -10,6 +10,9 @@ from dynamodb_encryption_sdk.material_providers.aws_kms import AwsKmsCryptograph
 from dynamodb_encryption_sdk.structures import AttributeActions, EncryptionContext
 from flask import Flask, render_template, request, redirect, url_for, flash
 
+# logging
+from flask.logging import create_logger
+
 # socketIO/chat imports
 from flask_socketio import SocketIO, send, emit
 
@@ -29,6 +32,10 @@ socketIO = SocketIO(app)
 # flask login
 #login = LoginManager(app)
 #login.init_app(app)
+
+# logging setup
+LOG = create_logger(application)
+
 
 
 # crypto items
@@ -80,9 +87,34 @@ def login():
 def register():
     return render_template('register.html')
 
-@app.route('/profile', methods=["GET", "POST"])
+@app.route('/editProfile', methods=["GET","POST"])
 def profile():
-    return render_template("profile.html")
+    # Get user info from db
+    userName = "jdmGET"
+    userEmail = "jmoore249@student.umgc.edu"
+    password = "123456"
+    passwordCheck = "123456"
+    LOG.info('userName: '+userName)
+
+    #on PSOT update user info in DB, on error flash error and make no change  
+    if request.method == "POST":
+        # userName = "jdmPOST"
+        userName = str(request.form['userName'])+"POST"
+        userEmail = str(request.form['userEmail'])
+        password = str(request.form['password'])
+        passwordCheck = str(request.form['passwordCheck'])
+        dateUpdated = str(datetime.now().isoformat())
+        LOG.info('userName: '+userName)
+        # Put to db from form
+    
+    
+
+    
+    return render_template("profile.html",
+                            userName = userName,
+                            userEmail = userEmail,
+                            password = password,
+                            passwordCheck = passwordCheck)
 
 @app.route('/Authenticate', methods=["POST", "GET"])
 def Authenticate():

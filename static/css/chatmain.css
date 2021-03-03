@@ -166,7 +166,7 @@ footer {
   align-items: center;
 }
 
-input{
+input.chatMessage{
     border: 1px solid rgba(255, 255, 255, .25);
     background-color: rgba(255, 255, 255, .25);
     border-radius: 3px;

@@ -1,18 +1,8 @@
-{% extends "layout.html" %} {% block register %}
-<div class="registerForm">
-<style>
-  form input {
-    border: none;
-    background: transparent;
-    border-bottom: 1px solid #fff;
-    outline: none;
-  }
-</style>
-
-
-  <form method="post" action="/SubmitNewUser">
+{% extends "layout.html" %} {% block profile %}
+<div class="profileForm">
+  <form id="editProfile" method="POST" action="/editProfile">
     <svg
-      class="registerImg"
+      class="profileImg"
       viewBox="0 0 32 32"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -40,39 +30,30 @@
         <path class="cls-1" d="M16,15V29h8a1,1,0,0,0,1-1V24A9,9,0,0,0,16,15Z" />
       </g>
     </svg>
+    <h1 class="profile">Profile</h1>
+    <!-- <span style="white-space: nowrap;"> -->
+    <label class="profile" for="userName">User Name</label>
+    <input class="profile" type="text" name="userName" id="userName" placeholder="" value="{{ userName }}" /><br>
+    <!-- </span> -->
+    <label class="profile" for="userEmail">Email Address</label>
+    <input class="profile" type="email" name="userEmail" id="userEmail" placeholder="Email" value="{{ userEmail }}"/>
+    <label class="profile" for="password">Password</label>
+    <input class="profile" type="password" name="password" id="password" placeholder="Password" value="{{ password }}"/>
+    <label class="profile" for="passwordCheck">Verify Password</label>
+    <input class="profile" type="password" name="passwordCheck" id="passwordCheck" placeholder="Password Again" value="{{ passwordCheck }}"/>
 
-    <h1>Register</h1>
-    <!-- <div class="form-group"> -->
-      <label for="userName">User Name</label>
-      <input type="text" name="userName" placeholder="User Name" disabled/>
-    <!-- </div> -->
-    <div class="form-group">
-      <input type="email" name="userEmail" placeholder="Email" />
-    </div>
-    <div class="form-group">
-      <input type="password" name="password" placeholder="Password" />
-    </div>
-    <div class="form-group">
-      <input
-        type="password"
-        name="passwordCheck"
-        placeholder="Password Again"
-      />
-    </div>
-    <div class="form-group">
-      <input
-        type="submit"
-        name="register"
-        value="Register"
-        class="registerButton btn btn-primary"
-      />
-    </div>
-
-    <div>
-      <div class="loginLink">
-        <a href="login" title="Already Registered?">Already Registered?</a>
-      </div>
-    </div>
+    <input
+      type="submit"
+      name="save"
+      value="Save"
+      class="profileButton btn btn-primary"
+    />
+    <button
+      form="editProfile"
+      class="profileButton btn btn-secondary"
+      formaction="chatmain"
+      >Close
+    </button>
   </form>
 </div>
 {% endblock %}

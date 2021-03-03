@@ -1,3 +1,8 @@
+@font-face {
+    font-family: rocko;
+src: url('../font/rocko.ttf');
+}
+
 main{
     color: black;
 }
@@ -8,4 +13,9 @@ main{
     font-size: 1.3rem;
     margin-bottom: 16px;
     color: red;
-  }
+}
+
+
+svg{
+    fill: white;
+}
