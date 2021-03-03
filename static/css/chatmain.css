@@ -115,7 +115,7 @@ h3.allUsers{
 }
 
 .message {
-  display: flex;
+  display: block; /*to have avatar to left/right as needed */
   flex-direction: column;
   margin: 10px 0;
   max-width: 60%;
@@ -134,7 +134,7 @@ h3.allUsers{
 
 .message p {
   border-radius: 15px;
-  display: block;
+  display: inline; /*to have avatar to left/right as needed */
   padding: 10px 20px;
   line-height: 18px;
 }
@@ -166,41 +166,48 @@ footer {
   align-items: center;
 }
 
+.chatSend{
+  display: flex;
+  width: 100%;
+}
+
 input.chatMessage{
-    border: 1px solid rgba(255, 255, 255, .25);
-    background-color: rgba(255, 255, 255, .25);
-    border-radius: 3px;
-    padding: 10px 20px;
+    border: none;
+    /* background-color: none; */
+    border-bottom-left-radius: 20px;
+    padding: 20px 20px;
     display: inline-block;
     text-align: left;
     font-size: 18px;
     outline: none;
     font-weight: 300;
     width: 75%;
+    background: darkgray;
     color: black;
 }
 
 input.chatMessage:focus{
-    background: white;
+    background: darkgray;
     color: black;
 }
 
-::-webkit-input-placeholder {
+/* ::-webkit-input-placeholder {
     font-family: 'Source Sans Pro', sans-serif;
     color:    gray;
     font-weight: 300;
     height: 100%;
     width: 100%;
-}
+} */
 
 button.sendButton {
   font-size: 18px;
   font-weight: bold;
   display: inline-block;
-  border-radius: 2px;
+  border-bottom-right-radius: 20px;
   border: none;
   padding: 20px;
   outline: none;
+  width: 25%;
   background: #5f7cf9;
   color: #f7f7f4;
 }
