@@ -1,0 +1,62 @@
+{% extends "layout.html" %} {% block profile %}
+<div class="profileForm">
+  <form id="editProfile" method="POST" action="/editProfile">
+    <svg
+      class="profileImg"
+      viewBox="0 0 32 32"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <style>
+          .cls-1 {
+            fill: #5f7cf9;
+          }
+          .cls-2 {
+            fill: #8c9eff;
+          }
+          .cls-3 {
+            fill: #4062ed;
+          }
+        </style>
+      </defs>
+      <title />
+      <g id="People">
+        <circle class="cls-1" cx="16" cy="8.5" r="5.5" />
+        <path
+          class="cls-2"
+          d="M16,15a9,9,0,0,0-9,9v4a1,1,0,0,0,1,1H24a1,1,0,0,0,1-1V24A9,9,0,0,0,16,15Z"
+        />
+        <path class="cls-3" d="M16,3V14A5.5,5.5,0,0,0,16,3Z" />
+        <path class="cls-1" d="M16,15V29h8a1,1,0,0,0,1-1V24A9,9,0,0,0,16,15Z" />
+      </g>
+    </svg>
+    <h1 class="profile">Profile</h1>
+    {% for category, message in get_flashed_messages(with_categories=True) %}
+      <p class="alert-{{category}}">{{ message }}</p>
+    {% endfor %}
+    <label class="profile" for="userName">User Name</label>
+    <input class="profile" type="text" name="userName" id="userName" placeholder="" value="{{ userName }}" />
+    <label class="profile" for="userEmail">Email Address</label>
+    <input class="profile" type="email" name="userEmail" id="userEmail" placeholder="Email" value="{{ userEmail }}"/>
+    <label class="profile" for="initials">Initials</label>
+    <input class="profile" type="text" name="userInitials" id="userInitials" placeholder="Intiials" value="{{ userInitials }}" maxlength="2"/>
+    <label class="profile" for="password">Password</label>
+    <input class="profile" type="password" name="password" id="password" placeholder="Password" value="{{ password }}"/>
+    <label class="profile" for="passwordCheck">Verify Password</label>
+    <input class="profile" type="password" name="passwordCheck" id="passwordCheck" placeholder="Password Again" value="{{ passwordCheck }}"/><br>
+
+    <input
+      type="submit"
+      name="save"
+      value="Save"
+      class="profileButton btn btn-primary"
+    />
+    <button
+      form="editProfile"
+      class="profileButton btn btn-secondary"
+      formaction="chatmain"
+      >Close
+    </button>
+  </form>
+</div>
+{% endblock %}

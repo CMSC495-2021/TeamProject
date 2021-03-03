@@ -1,4 +1,29 @@
+@font-face {
+    font-family: rocko;
+src: url('../font/rocko.ttf');
+}
+
 main{
     color: black;
+}
 
+.alert-Failed {
+    padding: 12px;
+    border-radius: 3px;
+    font-size: 1.5rem;
+    font-weight: bolder;
+    margin-bottom: 16px;
+    color: red;
+}
+
+.alert-Success {
+    padding: 12px;
+    border-radius: 3px;
+    font-size: 1.3rem;
+    margin-bottom: 16px;
+    color:black;
+}
+
+svg{
+    fill: white;
 }

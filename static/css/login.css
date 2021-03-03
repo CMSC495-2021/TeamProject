@@ -1,8 +1,3 @@
-@font-face {
-    font-family: rocko;
-src: url('../font/rocko.ttf');
-}
-
 .loginForm{
 
     font-size: 19px;
@@ -30,7 +25,7 @@ src: url('../font/rocko.ttf');
     text-decoration: none;
 }
 
-h1{
+h1.login{
     font-size: 40px;
     font-weight: 200;
     color: white;
@@ -44,7 +39,7 @@ h1{
     margin: 0 auto;
 }
 
-input{
+input.login{
     display: block;
     appearance: none;
     outline: 0;
@@ -58,8 +53,7 @@ input{
     text-align: center;
     font-size: 18px;
     color: white;
-    font-weight: 300;
-    
+    font-weight: 300; 
 }
 
 input:focus{
@@ -73,7 +67,7 @@ input:focus{
     font-weight: 300;
 }
 
-button{
+button.login{
     background-color: white;
     color: #7797dd;
     border: 0;
@@ -82,8 +76,4 @@ button{
     width: 282px;
     cursor: pointer;
     font-size: 18px;
-}
-
-svg{
-    fill: white;
 }

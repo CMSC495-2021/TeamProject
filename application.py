@@ -8,10 +8,13 @@ from dynamodb_encryption_sdk.encrypted.table import EncryptedTable
 from dynamodb_encryption_sdk.identifiers import CryptoAction
 from dynamodb_encryption_sdk.material_providers.aws_kms import AwsKmsCryptographicMaterialsProvider
 from dynamodb_encryption_sdk.structures import AttributeActions, EncryptionContext
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session, copy_current_request_context
+
+# logging
+from flask.logging import create_logger
 
 # socketIO/chat imports
-from flask_socketio import SocketIO, send, emit
+from flask_socketio import SocketIO, send, emit, disconnect
 
 # flask-login
 # from flask_login import LoginManager
@@ -30,86 +33,176 @@ socketIO = SocketIO(app)
 #login = LoginManager(app)
 #login.init_app(app)
 
+# logging setup
+LOG = create_logger(application)
 
 # crypto items
+#Try-except set up to bypass crypto issues when key is expired
 class CryptoItems:
-    aws_access_key_id = "ASIARSOHCYSCHZZKMU5V"
-    aws_secret_access_key = "torpnKtlgxYHkE1Ttvs7m6/YEG3MXLtKkBglMpBP"
-    aws_session_token = "FwoGZXIvYXdzEJP//////////wEaDC6GDhYRwlX0XOdq9yLIAbwt/oBru7qz5RVKSVlSksPuFwPntoikgxrV" \
-                        "xcv1HHYa1nCZYcP4iG8RUVUMK9DlNDC0XZBPkJZNmIZ/n/N1GsAw/tbgSRdUHx7p/lzomddRZYaJ4EykKS2LFKldVb" \
-                        "PQuF2ak20HU0Tx2ujRRr+CMF0VdWfTAx0y5Jxc3PdWGe56x2agbpE2/U2BrVxzkUsAxG5gf0T5Yr0E39om+BUH39VD" \
-                        "INAkLNh9fWjzONzxIF8InCJg3cGBRpEXLYlShJ4JQI90n7lAJyxIKJOg9oEGMi3FOKH5Xw2eBCQCvOyiAG+CKQwGqA" \
-                        "ALOMmnrV1T+dZT1IXQYNfM2xCpoWugNbE="
+    aws_access_key_id = "ASIARSOHCYSCN7AHG5X2"
+    aws_secret_access_key = "qmFfarnCi7K4ON37Jux+EuUJn5hjlyrOdvzrOmY2"
+    aws_session_token = "FwoGZXIvYXdzEPv//////////wEaDNkZQxRhOvS2k8GCLCLIASjGAKe7" \
+                        "AQYzNg0VPfz5aMJdm9BVT/fEY9NoSQkjkZaCK4gciMrO6WeJ6p2Ehkexu1GKwMnlfCI9h2BB" \
+                        "wZmt65d/YZAffSt+SVrVbhm5Qhj82K0+JokaH5yD7irsJ1cHVLMe45YC5s6V5p0melYlFm0qy" \
+                        "wmoYUjRg+FTn3uK6nfT9KrlYubWL5PMx8AHI5BHr9deIuVZ6uBXTr75631WSVd9hjgFpdE+SB" \
+                        "Es58RBKai3WN6px2Qs2AdXPJ0E1PzjF0dgPVeB7sZEKOCB1YEGMi310efByoaL/P18v/s8BJQW" \
+                        "hgqHHDBQI1RXdb4k6/m6ivWe94D4cD+eNewO/ac="
 
-    dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
-                                aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
-                                region_name='us-east-1').Table('Users')
+    try:
+        dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
+                                    aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
+                                    region_name='us-east-1').Table('Users')
 
-    # crypto key and material provider
-    aws_cmk_id = 'arn:aws:kms:us-east-1:108328567940:key/ac31eb77-1a66-452f-9744-8aec26b9aa74'
-    aws_kms_cmp = AwsKmsCryptographicMaterialsProvider(key_id=aws_cmk_id)
+        # crypto key and material provider
+        aws_cmk_id = 'arn:aws:kms:us-east-1:108328567940:key/ac31eb77-1a66-452f-9744-8aec26b9aa74'
+        aws_kms_cmp = AwsKmsCryptographicMaterialsProvider(key_id=aws_cmk_id)
 
-    # how the crypto is applied to attributes
-    crypto_actions = AttributeActions(
-        default_action=CryptoAction.DO_NOTHING,
-        attribute_actions={
-            'password': CryptoAction.ENCRYPT_AND_SIGN})
+        # how the crypto is applied to attributes
+        crypto_actions = AttributeActions(
+            default_action=CryptoAction.DO_NOTHING,
+            attribute_actions={
+                'password': CryptoAction.ENCRYPT_AND_SIGN})
 
-    crypto_context = EncryptionContext(table_name='Users')
+        crypto_context = EncryptionContext(table_name='Users')
 
-    custom_crypto_config = CryptoConfig(materials_provider=aws_kms_cmp,
-                                        attribute_actions=crypto_actions,
-                                        encryption_context=crypto_context)
+        custom_crypto_config = CryptoConfig(materials_provider=aws_kms_cmp,
+                                            attribute_actions=crypto_actions,
+                                            encryption_context=crypto_context)
 
-    encrypted_resource = EncryptedTable(table=dbResource, materials_provider=aws_kms_cmp,
-                                        attribute_actions=crypto_actions)
-
-
-@app.route('/index', methods=["GET"])
-def index():
-    return render_template("index.html")
+        encrypted_resource = EncryptedTable(table=dbResource, materials_provider=aws_kms_cmp,
+                                            attribute_actions=crypto_actions)
+    except:
+        #FIXME TEST DB for session testing... DO NOT IMPLEMENT IN PROD!!!
+        users = {
+            "jdmoore": {
+                "username": "jdmoore",
+                "email": "jmoore249@example.com",
+                "password": "example",
+                "initials": "JD"
+            },
+            "rmedley": {
+                "username": "rmedley",
+                "email": "rmedley@example.com",
+                "password": "example",
+                "initials": "RM"
+            },
+            "dji": {
+                "username": "dji",
+                "email": "dji@example.com",
+                "password": "example",
+                "initials": "DJ"
+            },
+            "pbarz": {
+                "username": "pbarz",
+                "email": "pbarz@example.com",
+                "password": "example",
+                "initials": "PB"
+            }
+        }
+        #END TEST DB
 
 
 @app.route('/login', methods=["GET", "POST"])
+@app.route('/index', methods=["GET"])
 @app.route('/', methods=["GET", "POST"])
 def login():
-    return render_template("login.html")
-
+    if not CryptoItems.users:
+        return render_template("login.html")
+    else:
+        flash('Temporary DB in use', 'Failed')
+        return render_template("login.html")
 
 @app.route('/register', methods=["POST", "GET"])
 def register():
     return render_template('register.html')
 
+#TODO Restrict to auth'd user in session
+@app.route('/editProfile', methods=["GET","POST"])
+def profile():
+
+    #FIXME Remove test db for prod
+    # Get user info from test db
+    user = CryptoItems.users[session['USERNAME']]
+    userName = user['username']
+    userEmail = user['email']
+    userinitials = user['initials']
+    password = user['password']
+    passwordCheck = user['password']
+    LOG.info('userName: '+userName)
+    # End remove test db for prod
+    
+    #on POST update user info in DB, on error flash error and make no change  
+    if request.method == "POST":
+        req = request.form
+        userName = str(req['userName'])
+        userEmail = str(req['userEmail'])
+        password = str(req['password'])
+        userInitials = str(req['userInitials'])
+        passwordCheck = str(req['passwordCheck'])
+        dateUpdated = str(datetime.now().isoformat())
+
+        #TODO Save user to db from form
+        #TODO If error flash error
+        #TODO Re-load session with new user object
+    
+    return render_template("profile.html",
+                            userName = userName,
+                            userEmail = userEmail,
+                            #TODO: Add initials
+                            password = password,
+                            passwordCheck = passwordCheck)
+
 
 @app.route('/Authenticate', methods=["POST", "GET"])
 def Authenticate():
     if request.method == "POST":
-
         try:
-            userName = str(request.form['username'])
-            password = str(request.form['password'])
+            req = request.form
+            username = str(req['username'])
+            password = str(req['password'])
 
-            response = CryptoItems.encrypted_resource.query(
-                KeyConditionExpression=Key('UserName').eq(userName),
-                crypto_config=CryptoItems.custom_crypto_config
-            )
-            try:
-                items = response['Items']
-                pw = items[0]['password']
+            # FIXME Remove if/else for production
+            if CryptoItems.users:
+                # AUTH AGAINST FAKE DB USED FOR TESTING
+                if not username in CryptoItems.users:
+                    flash('Bad UserName/Password', 'Failed')
+                    return redirect(url_for('login'))
+                else:
+                    user = CryptoItems.users[username]
+
+                if not password == user["password"]:
+                    flash('Bad UserName/Password', 'Failed')
+                    return redirect(url_for('login'))
+                else:
+                    session["USERNAME"] = user["username"]
+                    session["INITIALS"] = user["initials"]
+                    return redirect(url_for('chatmain'))
+            else:
+            # END Remove if/else for production
+
+                #Original db call for user KEEP and un-indent!
+                response = CryptoItems.encrypted_resource.query(
+                    KeyConditionExpression=Key('UserName').eq(username),
+                    crypto_config=CryptoItems.custom_crypto_config
+                )
                 try:
-                    if password == pw:
-                        flash('Success!', 'Success')
-                        return redirect(url_for('chatmain'))
-                    else:
+                    items = response['Items']
+                    pw = items[0]['password']
+                    try:
+                        if password == pw:
+                            flash('User created!', 'Success')
+                            return redirect(url_for('chatmain'))
+                            #TODO Load user into session for use...
+                        else:
+                            flash('Bad UserName/Password', 'Failed')
+                            return redirect(url_for('login'))
+                    except:
                         flash('Bad UserName/Password', 'Failed')
                         return redirect(url_for('login'))
                 except:
                     flash('Bad UserName/Password', 'Failed')
                     return redirect(url_for('login'))
-            except:
-                flash('Bad UserName/Password', 'Failed')
-                return redirect(url_for('login'))
-
+                #End original call
         except:
             flash('Bad UserName/Password', 'Failed')
             return redirect(url_for('login'))
@@ -122,16 +215,22 @@ def Authenticate():
 @app.route('/SubmitNewUser', methods=["POST", "GET"])
 def SubmitNewUser():
     if request.method == 'POST':
-
-        userName = str(request.form['userName'])
-        userEmail = str(request.form['userEmail'])
-        password = str(request.form['password'])
-        passwordCheck = str(request.form['passwordCheck'])
+        req = request.form
+        userName = str(req['userName'])
+        userEmail = str(req['userEmail'])
+        userInitials = str(req['userInitials'])
+        password = str(req['password'])
+        passwordCheck = str(req['passwordCheck'])
         dateCreated = str(datetime.now().isoformat())
 
         count = CryptoItems.encrypted_resource.scan(crypto_config=CryptoItems.custom_crypto_config)
         userID = int(len(count['Items']) + 1)
 
+
+        #Why is this check set up as a try-except?
+        #How does the password check fire if the username
+        #check succeeds and skips the except?
+        #Haven't actually tested since keys required for DB
         try:
             response = CryptoItems.encrypted_resource.query(
                 KeyConditionExpression=Key('UserName').eq(userName),
@@ -141,12 +240,13 @@ def SubmitNewUser():
             items = response['Items']
             uniqueUser = items[0]['UserName']
 
+            #Same question here about wrapping the if in a try-except...
             try:
                 if uniqueUser == userName:
-                    flash('Bad User Already Exists!', 'Failed')
+                    flash('User Already Exists!', 'Failed')
                     return redirect(url_for('register'))
             except:
-                flash('Bad User Already Exists!', 'Failed')
+                flash('Error checking username!', 'Failed')
                 return redirect(url_for('register'))
         except:
             try:
@@ -155,6 +255,7 @@ def SubmitNewUser():
                         TableName='Users',
                         Item={'UserName': userName,
                               'UserID': userID,
+                              #TODO Add 'UserInitials': userInitials,
                               'DateCreated': dateCreated,
                               'UserEmail': userEmail,
                               'password': password
@@ -170,17 +271,55 @@ def SubmitNewUser():
                 flash('Passwords Do Not Match!', 'Failed')
                 return redirect(url_for('register'))
 
-
+#Added basic session info for use in template
+#May need to build out based on feedback
+#TODO Restrict to auth'd user
 @app.route("/chatmain", methods=["GET", "POST"])
 def chatmain():
-    return render_template('chatmain.html')
+    username = session['USERNAME']
+    initials = session['INITIALS']
+    return render_template('chatmain.html', 
+                            username = username, 
+                            initials = initials,)
 
+# SocketIO Event Handler template
+# @socketIO.on('message')
+# def message(data):
+#     send(data)
+#     emit('some-event', 'EVENT TEST')
 
-# SocketIO Event Handler
-@socketIO.on('message')
-def message(data):
-    send(data)
-    emit('some-event', 'EVENT TEST')
+# Broadcast message to all conencted sockets
+@socketIO.on('broadcast_event', namespace='/chatmain')
+def broadcast_message(message):
+    #TODO Somehow in here we need to see if sender is 
+    #session user to determine response
+    #message to make staggered chat window...
+    emit('response',
+    {
+        'data': message['data'],
+        'username': session['USERNAME'],
+        'initials': session['INITIALS']
+    },
+        broadcast=True)
+
+#TODO Use for logoff?
+#FIXME This isn't working yet for some reason it immediately reconnects
+#probably need to investigate the disconnect method or tie the req
+#to the app's user session kill...
+#Maybe look into flask_login as well
+@socketIO.on('disconnect_event', namespace='/chatmain')
+def disconnect_request():
+    @copy_current_request_context
+    def can_disconnect():
+        disconnect()
+    emit('response',
+    {
+        'data': 'Disconnected!',
+        'username': session['USERNAME'],
+        'initials': session['INITIALS']
+    },
+    broadcast=True,
+    callback=can_disconnect)
 
 
 if __name__ == '__main__':

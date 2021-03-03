@@ -2,8 +2,9 @@
     Requires universal tag css set in login.css
     Custom class assigned as necessary
 */
+ 
 
-.registerForm {
+.profileForm {
   font-size: 19px;
   border: 2px solid rgba(255, 255, 255, 0.25);
   border-radius: 25px;
@@ -14,15 +15,14 @@
   text-align: center;
 }
 
-.registerImg {
+.profileImg {
   width: 20%;
-  display: block;
+  /* display: block; */
   text-align: center;
   margin: 0 auto;
 }
 
-/* Overrides input tag css to mimic button tag */
-.registerButton {
+.profileButton {
   background-color: white;
   color: #7797dd;
   border: 0;
@@ -31,23 +31,14 @@
   width: 282px;
   cursor: pointer;
   font-size: 18px;
+  margin: 0 auto 10px auto;
 }
 
-.loginLink {
-  padding-top: 15px;
+label.profile{
+  text-align: left;
 }
 
-.loginLink a {
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  padding: 7px;
-  margin: 5px;
-  background: #5f7cf9;
-  border-radius: 5px;
-  text-decoration: none;
-}
-
-input.register{
+input.profile{
   display: block;
   appearance: none;
   outline: 0;
@@ -64,7 +55,7 @@ input.register{
   font-weight: 300; 
 }
 
-h1.register{
+h1.profile{
   font-size: 40px;
   font-weight: 200;
   color: white;

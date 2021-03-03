@@ -4,18 +4,25 @@
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/main.css')}}">
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/body.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/login.css')}}">
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/register.css')}}">    
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/chatmain.css')}}">   
-    <script src="{{  url_for('static', filename='node_modules/socket.io/client-dist/socket.io.js') }}"></script>
-    <script src="{{  url_for('static', filename='scripts/socketio.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/login.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/profile.css')}}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" 
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" 
+            crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='node_modules/socket.io/client-dist/socket.io.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/socketio.js') }}"></script>
     <script src="{{ url_for('static', filename='scripts/chat.js') }}"></script>
+    <!-- <script src="{{ url_for('static', filename='scripts/test.js') }}"></script> -->
 </head>
 <body>
     <main>
         {% block login %}
         {% endblock %}
         {% block register %}
+        {% endblock %}
+        {% block profile %}
         {% endblock %}
         {% block chat %}
         {% endblock %}

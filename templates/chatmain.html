@@ -4,7 +4,7 @@
     <section class="sideview">
         <div>
             <div>
-                <span class="avatar">RM</span>
+                <span class="avatar">{{ initials }}</span>
                 <div id="mainMenu" class="meatballs">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><defs><style>.cls-1{fill:#ffffff;}.cls-2{fill:#f0f0f0;}</style></defs><title/><g id="dots"><circle class="cls-1" cx="16" cy="16" r="3"/><circle class="cls-1" cx="16" cy="8" r="3"/><circle class="cls-1" cx="16" cy="24" r="3"/><path class="cls-2" d="M16,13v6a3,3,0,0,0,0-6Z"/><path class="cls-2" d="M16,5v6a3,3,0,0,0,0-6Z"/><path class="cls-2" d="M16,21v6a3,3,0,0,0,0-6Z"/></g></svg>
                 </div>
@@ -19,6 +19,8 @@
             </div>
         </div>
         <hr/>
+
+        <!-- Use special socketIO response to populate status indicator -->
         <h3 class="allUsers">All Users</h3>
         <ul>
             <li class="online"> DJ </li>
@@ -29,35 +31,24 @@
 
     <section class="mainview">
 
-        <section class="chat-view">
-            <div class="message received">
-                <p> This aint no real message, but a test.</p>
-                <div>
-                    <span class="avatar">PB</span>
-                    <h4 class="username"> Phillip </h4>
-                </div>
+        <!-- Items in this section rendered by SocketIO -->
+        <section class="chat-view" id="chat-view">
+            <!-- <div class="message received">
+                <span class="avatar">PB</span>
+                <p>This aint no real message, but a test.</p>
             </div>
 
             <div class="message sent">
                 <p> This is a test. Not a real Message!</p>
-            </div>
-
+            </div> -->
         </section>
 
         <footer>
-            <input class="chatMessage" type="text" name="message" rows="2" cols="100" placeholder="Type a message ..."></textarea>
-            <button class="sendButton" name="send" type="submit">
-                Send
-            </button>
+            <form class="chatSend" id="chatSend" method="POST" action='#'>
+                <input class="chatMessage" type="text" name="message_data" id="message_data" placeholder="Type a message ..." />
+                <button class="sendButton" name="send" type="submit">Send</button>
+            </form>
         </footer>
     </section>
 </div>
-    {#
-    When we discuss how we're running the client/server sides we'll need this JS in here. Probably more...
-
-    <script src="{{ url_for('static', filename='node_modules/socket.io/client-dist/socket.io.js') }}"></script>
-    <script src="{{ url_for('static', filename='scripts/socketio.js') }}"></script>
-
-#}
-
 {% endblock %}
