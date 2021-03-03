@@ -4,16 +4,16 @@
 */
  
 
-/* .profileForm {
+.profileForm {
   font-size: 19px;
   border: 2px solid rgba(255, 255, 255, 0.25);
   border-radius: 25px;
-  max-width: 800px;
+  max-width: 500px;
   margin: 0 auto;
   padding: 55px 0;
   height: -webkit-fill-available;
   text-align: center;
-} */
+}
 
 .profileImg {
   width: 20%;
@@ -39,17 +39,17 @@ label.profile{
 }
 
 input.profile{
-  display: inline-block;
-  /* appearance: none; */
+  display: block;
+  appearance: none;
   outline: 0;
   border: 1px solid rgba(255, 255, 255, .25);
   background-color: rgba(255, 255, 255, .25);
   width: 250px;
   border-radius: 3px;
   padding: 10px 15px;
-  margin: 0 auto 10px 0;
-  /* display: block; */
-  /* text-align: center; */
+  margin: 0 auto 10px auto;
+  display: block;
+  text-align: center;
   font-size: 18px;
   color: white;
   font-weight: 300; 
