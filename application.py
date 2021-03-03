@@ -8,13 +8,13 @@ from dynamodb_encryption_sdk.encrypted.table import EncryptedTable
 from dynamodb_encryption_sdk.identifiers import CryptoAction
 from dynamodb_encryption_sdk.material_providers.aws_kms import AwsKmsCryptographicMaterialsProvider
 from dynamodb_encryption_sdk.structures import AttributeActions, EncryptionContext
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session, copy_current_request_context
 
 # logging
 from flask.logging import create_logger
 
 # socketIO/chat imports
-from flask_socketio import SocketIO, send, emit
+from flask_socketio import SocketIO, send, emit, disconnect
 
 # flask-login
 # from flask_login import LoginManager
@@ -35,8 +35,6 @@ socketIO = SocketIO(app)
 
 # logging setup
 LOG = create_logger(application)
-
-
 
 # crypto items
 # class CryptoItems:
@@ -72,13 +70,37 @@ LOG = create_logger(application)
 #     encrypted_resource = EncryptedTable(table=dbResource, materials_provider=aws_kms_cmp,
 #                                         attribute_actions=crypto_actions)
 
-
-@app.route('/index', methods=["GET"])
-def index():
-    return render_template("index.html")
-
+#FIXME TEST DB for session testing... DO NOT IMPLEMENT IN PROD!!!
+users = {
+    "jdmoore": {
+        "username": "jdmoore",
+        "email": "jmoore249@example.com",
+        "password": "example",
+        "initials": "JD"
+    },
+    "rmedley": {
+        "username": "rmedley",
+        "email": "rmedley@example.com",
+        "password": "example",
+        "initials": "RM"
+    },
+    "dji": {
+        "username": "dji",
+        "email": "dji@example.com",
+        "password": "example",
+        "initials": "DJ"
+    },
+    "pbarz": {
+        "username": "pbarz",
+        "email": "pbarz@example.com",
+        "password": "example",
+        "initials": "PB"
+    }
+}
+#END TEST DB
 
 @app.route('/login', methods=["GET", "POST"])
+@app.route('/index', methods=["GET"])
 @app.route('/', methods=["GET", "POST"])
 def login():
     return render_template("login.html")
@@ -87,42 +109,60 @@ def login():
 def register():
     return render_template('register.html')
 
+#TODO Restrict to auth'd user
 @app.route('/editProfile', methods=["GET","POST"])
 def profile():
-    # Get user info from db
-    userName = "jdmGET"
-    userEmail = "jmoore249@student.umgc.edu"
-    password = "123456"
-    passwordCheck = "123456"
+    # Get user info from test db
+    user = users[session['USERNAME']]
+    userName = user['username']
+    userEmail = user['email']
+    userinitials = user['initials']
+    password = user['password']
+    passwordCheck = user['password']
     LOG.info('userName: '+userName)
-
-    #on PSOT update user info in DB, on error flash error and make no change  
+    #on POST update user info in DB, on error flash error and make no change  
     if request.method == "POST":
-        # userName = "jdmPOST"
-        userName = str(request.form['userName'])+"POST"
-        userEmail = str(request.form['userEmail'])
-        password = str(request.form['password'])
-        passwordCheck = str(request.form['passwordCheck'])
+        req = request.form
+        userName = str(req['userName'])
+        userEmail = str(req['userEmail'])
+        password = str(req['password'])
+        #TODO: Add initials
+        passwordCheck = str(req['passwordCheck'])
         dateUpdated = str(datetime.now().isoformat())
-        LOG.info('userName: '+userName)
-        # Put to db from form
-    
-    
 
+        # save user to db from form
+        # Re-load session with new user object
     
     return render_template("profile.html",
                             userName = userName,
                             userEmail = userEmail,
+                            #TODO: Add initials
                             password = password,
                             passwordCheck = passwordCheck)
+
 
 @app.route('/Authenticate', methods=["POST", "GET"])
 def Authenticate():
     if request.method == "POST":
-
         try:
-            userName = str(request.form['username'])
-            password = str(request.form['password'])
+            req = request.form
+            username = str(req['username'])
+            password = str(req['password'])
+
+            # AUTH AGAINST FAKE DB USED FOR TESTING
+            if not username in users:
+                flash('Bad UserName/Password', 'Failed')
+                return redirect(url_for('login'))
+            else:
+                user = users[username]
+
+            if not password == user["password"]:
+                flash('Bad UserName/Password', 'Failed')
+                return redirect(url_for('login'))
+            else:
+                session["USERNAME"] = user["username"]
+                session["INITIALS"] = user["initials"]
+                return redirect(url_for('chatmain'))
 
             # response = CryptoItems.encrypted_resource.query(
             #     KeyConditionExpression=Key('UserName').eq(userName),
@@ -135,6 +175,7 @@ def Authenticate():
             #         if password == pw:
             #             flash('Success!', 'Success')
             #             return redirect(url_for('chatmain'))
+            #             #Load user obj into session for use...
             #         else:
             #             flash('Bad UserName/Password', 'Failed')
             #             return redirect(url_for('login'))
@@ -157,11 +198,12 @@ def Authenticate():
 @app.route('/SubmitNewUser', methods=["POST", "GET"])
 def SubmitNewUser():
     if request.method == 'POST':
-
-        userName = str(request.form['userName'])
-        userEmail = str(request.form['userEmail'])
-        password = str(request.form['password'])
-        passwordCheck = str(request.form['passwordCheck'])
+        req = request.form
+        userName = str(req['userName'])
+        userEmail = str(req['userEmail'])
+        #TODO: Add initials
+        password = str(req['password'])
+        passwordCheck = str(req['passwordCheck'])
         dateCreated = str(datetime.now().isoformat())
 
         # count = CryptoItems.encrypted_resource.scan(crypto_config=CryptoItems.custom_crypto_config)
@@ -205,32 +247,54 @@ def SubmitNewUser():
         #         flash('Passwords Do Not Match!', 'Failed')
         #         return redirect(url_for('register'))
 
-
+#Added basic session info for use in template
+#May need to build out based on feedback
+#TODO Restrict to auth'd user
 @app.route("/chatmain", methods=["GET", "POST"])
 def chatmain():
-    return render_template('chatmain.html')
-
-@app.route('/testlogin', methods=["GET", "POST"])
-def testlogin():
-    return render_template("testlogin.html")
-
-@app.route('/testAuthenticate', methods=["POST", "GET"])
-def testAuthenticate():
-    if request.method == "POST":
-        userName = str(request.form['username'])
-        password = str(request.form['password'])
-        if userName == "jd":
-            flash('Bad UserName/Password', 'Failed')
-            return redirect(url_for('testlogin'))
-        else:
-            return redirect(url_for('chatmain'))
-
+    username = session['USERNAME']
+    initials = session['INITIALS']
+    return render_template('chatmain.html', 
+                            username = username, 
+                            initials = initials,)
 
 # SocketIO Event Handler
-@socketIO.on('message')
-def message(data):
-    send(data)
-    emit('some-event', 'EVENT TEST')
+# @socketIO.on('message')
+# def message(data):
+#     send(data)
+#     emit('some-event', 'EVENT TEST')
+
+# Broadcast message to all conencted sockets
+@socketIO.on('broadcast_event', namespace='/chatmain')
+def broadcast_message(message):
+    #TODO Somehow in here we need to see if sender is 
+    #session user to determine response
+    #message to make staggered chat window...
+        emit('response',
+        {
+            'data': message['data'],
+            'username': session['USERNAME'],
+            'initials': session['INITIALS']
+        },
+         broadcast=True)
+
+#TODO Use for logoff?
+#FIXME This isn't working yet for some reason it immediately reconnects
+#probably need to investigate the disconnect method or tie the req
+#to the app's user session kill...
+@socketIO.on('disconnect_event', namespace='/chatmain')
+def disconnect_request():
+    @copy_current_request_context
+    def can_disconnect():
+        disconnect()
+    emit('response',
+    {
+        'data': 'Disconnected!',
+        'username': session['USERNAME'],
+        'initials': session['INITIALS']
+    },
+    broadcast=True,
+    callback=can_disconnect)
 
 
 if __name__ == '__main__':
