@@ -142,20 +142,30 @@ def profile():
         dateUpdated = str(datetime.now().isoformat())
         
         try:
-            #TODO Save user to db from form
+            #FIXME This was C/P from submit user and is likely the wrong call
+            #but I instered it anyway to clear 'no try' error
+            CryptoItems.encrypted_resource.put_item(
+                TableName='Users',
+                Item={'UserName': userName,
+                        'UserID': userID,
+                        'UserInitials': userInitials,
+                        'DateCreated': dateCreated,
+                        'UserEmail': userEmail,
+                        'password': password
+                        },
+                crypto_config=CryptoItems.custom_crypto_config)
         except:
             flash('unable to save user info', 'Failed')
-            return redirect(url_for('profile')
+            return redirect(url_for('profile'))
+        
         #TODO Re-load session with new user object
-    
-    return render_template("profile.html",
-                            userName = userName,
-                            userEmail = userEmail,
-                            userInitials = userInitials,
-                            password = password,
-                            passwordCheck = passwordCheck)
-
-
+        return render_template("profile.html",
+                                userName = userName,
+                                userEmail = userEmail,
+                                userInitials = userInitials,
+                                password = password,
+                                passwordCheck = passwordCheck)
+        
 @app.route('/Authenticate', methods=["POST", "GET"])
 def Authenticate():
     if request.method == "POST":
@@ -294,9 +304,6 @@ def chatmain():
 # Broadcast message to all conencted sockets
 @socketIO.on('broadcast_event', namespace='/chatmain')
 def broadcast_message(message):
-    #TODO Somehow in here we need to see if sender is 
-    #session user to determine response
-    #message to make staggered chat window...
     emit('response',
     {
         'data': message['data'],
