@@ -140,15 +140,18 @@ def profile():
         userInitials = str(req['userInitials'])
         passwordCheck = str(req['passwordCheck'])
         dateUpdated = str(datetime.now().isoformat())
-
-        #TODO Save user to db from form
-        #TODO If error flash error
+        
+        try:
+            #TODO Save user to db from form
+        except:
+            flash('unable to save user info', 'Failed')
+            return redirect(url_for('profile')
         #TODO Re-load session with new user object
     
     return render_template("profile.html",
                             userName = userName,
                             userEmail = userEmail,
-                            #TODO: Add initials
+                            userInitials = userInitials,
                             password = password,
                             passwordCheck = passwordCheck)
 
@@ -255,7 +258,7 @@ def SubmitNewUser():
                         TableName='Users',
                         Item={'UserName': userName,
                               'UserID': userID,
-                              #TODO Add 'UserInitials': userInitials,
+                              'UserInitials': userInitials,
                               'DateCreated': dateCreated,
                               'UserEmail': userEmail,
                               'password': password
