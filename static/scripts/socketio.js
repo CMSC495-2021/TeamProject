@@ -13,7 +13,12 @@ $(document).ready(function() {
 
     // Creates response element from app for display in chat main window...
     socket.on('response', function(msg, cb) {
-        $('#chat-view').append('<br><div class="message received"><span class="avatar">'+msg.initials+'</span><p>'+msg.data+'</p></div>');
+        if(msg.username == sessionStorage.username || sessionStorage.username == undefined){
+            $('#chat-view').append('<br><div class="message sent"><span class="avatar">'+msg.initials+'</span><p>'+msg.data+'</p></div>');
+        }
+        else{
+            $('#chat-view').append('<br><div class="message received"><span class="avatar">'+msg.initials+'</span><p>'+msg.data+'</p></div>');
+        }
         if (cb)
             cb();
     });
@@ -21,6 +26,7 @@ $(document).ready(function() {
     // bound to send button to send a brodcasted message from input to app
     // If nothing in input, don't broadcast
     $('form#chatSend').submit(function(event) {
+        sessionStorage.username = event.target.dataset.username;
         if ($('#message_data').val()){
             socket.emit('broadcast_event', {data: $('#message_data').val()});
             $(' #message_data ').val('').focus();
