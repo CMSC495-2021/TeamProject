@@ -8,7 +8,7 @@ from dynamodb_encryption_sdk.encrypted.table import EncryptedTable
 from dynamodb_encryption_sdk.identifiers import CryptoAction
 from dynamodb_encryption_sdk.material_providers.aws_kms import AwsKmsCryptographicMaterialsProvider
 from dynamodb_encryption_sdk.structures import AttributeActions, EncryptionContext
-from flask import Flask, render_template, request, redirect, url_for, flash, session, copy_current_request_context, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, session, copy_current_request_context
 
 # logging
 from flask.logging import create_logger
@@ -39,13 +39,13 @@ LOG = create_logger(application)
 # crypto items
 #Try-except set up to bypass crypto issues when key is expired
 class CryptoItems:
-    aws_access_key_id = "ASIARSOHCYSCDYZBPDNS"
-    aws_secret_access_key = "KPRxkaS9vJAG620wrVQTJ7duPhJ0Q1iQnXZ5EGWB"
-    aws_session_token = "FwoGZXIvYXdzEAQaDKVbax1bLAi382KcuCLIAS80POdDVF2Ntlly4f7eZ5JPs8kN2AUeQ15dQm3jGJQ0Pq8AICI1Eoh" \
-                        "WP+QkBx5Qc+Ys0KeSbuvv9l26dxzXyUxUEwcMzCrW1cSS4KU9A1wgIwC/ilUl4YmJME/5dJlCvqwxgPyfrOW5YVyx5" \
-                        "9s9NEAp7ziVOG/zn7F7ODVGFlKU+rF0V74sHj5wP98UF1ZGrl4JK7HhTTUI9AaOT5e9x9ZfLKzHkZde9S4HPjwWgf" \
-                        "uNiKPXgJvQrH5mo4miEOc1vFHYYIgihG4CKNyUj4IGMi1nMbO6ABB4F7i4/sWAWMK8i7b/xySxRuLJsGoyAhw65s" \
-                        "UhQiz9/wJW5qCxUz8="
+    aws_access_key_id = "ASIARSOHCYSCJJ7F5XTQ"
+    aws_secret_access_key = "Q0MbFA3TS8MjSjSz6Loa9/crOJwC+Q55kxoaHld/"
+    aws_session_token = "FwoGZXIvYXdzEAgaDHS9Y1Z3r2Nc3Bo9PiLIATx2D5SCjtAvmrZclqdJ+EhrBoQTPCfQREw" \
+                        "c/21cWyND5We6HpQDh6iQZqwx9rsQUBdFpf+UsllJZVPEwfhEK6/kGG3lBgnJSz+1U66RnzBN1TY4E1Hl48x4OOk" \
+                        "dHgvFuwL29jtBMmea5pbFlzu+Spt8UrBQ3jtxHjmEHxTdfXVGVqeUwQ4HmSWM/Ko9CqSLTcc2WslVpjfyNBLnv5CT" \
+                        "OckGCAhmPkPcPOlQX9xdpZu2BOJzU+QZfilgVG/dBHakyoVZRKgtkArPKMP5j4IGMi1Rqq5sJ/ESXRwkqPrBm3wyw" \
+                        "qiCoV+YckEfqIC3UaRcZ1fMBsBwQUAsbdMjtk="
 
     dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                                 aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
