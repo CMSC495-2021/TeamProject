@@ -76,12 +76,14 @@ class CryptoItems:
 @app.route('/index', methods=["GET"])
 @app.route('/', methods=["GET", "POST"])
 def login():
-    if not CryptoItems.users:
+    #FIXME Remove if else
+    # if not CryptoItems.users:
+        #KEEP THIS LINE AND UN-INDENT
         return render_template("login.html")
-    else:
-        flash('Temporary DB in use', 'Failed')
-        return render_template("login.html")
-
+    # else:
+    #     flash('Temporary DB in use', 'Failed')
+    #     return render_template("login.html")
+    #End Remove if-else
 @app.route('/register', methods=["POST", "GET"])
 def register():
     return render_template('register.html')
