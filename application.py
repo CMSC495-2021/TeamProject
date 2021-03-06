@@ -186,7 +186,7 @@ def SubmitNewUser():
             count = CryptoItems.encrypted_resource.scan(crypto_config=CryptoItems.custom_crypto_config)
             userID = int(len(count['Items']) + 1)
         except Exception as e:
-            LOG.error("TEST Error: " +e)
+            LOG.error("TEST Error: " + e)
 
 
         #Why is this check set up as a try-except?
