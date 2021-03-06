@@ -152,23 +152,23 @@ def Authenticate():
                         flash('User created!', 'Success')
                         return redirect(url_for('chatmain'))
                     else:
-                        flash('5 Bad UserName/Password', 'Failed')
+                        flash('Bad UserName/Password', 'Failed')
                         return redirect(url_for('login'))
                 except Exception as e:
                     print("EXCEPTION: "+str(e))
-                    flash('3 Bad UserName/Password', 'Failed')
+                    flash('Bad UserName/Password', 'Failed')
                     return redirect(url_for('login'))
             except Exception as e:
                 print("EXCEPTION: "+str(e))
-                flash('2 Bad UserName/Password', 'Failed')
+                flash('Bad UserName/Password', 'Failed')
                 return redirect(url_for('login'))
             #End original call
         except Exception as e:
             print("EXCEPTION: "+str(e))
-            flash('1 Bad UserName/Password', 'Failed')
+            flash('Bad UserName/Password', 'Failed')
             return redirect(url_for('login'))
     else:
-        flash('4 Bad UserName/Password', 'Failed')
+        flash('Bad UserName/Password', 'Failed')
         return redirect(url_for('login'))
 
 
@@ -187,7 +187,7 @@ def SubmitNewUser():
             count = CryptoItems.encrypted_resource.scan(crypto_config=CryptoItems.custom_crypto_config)
             userID = int(len(count['Items']) + 1)
         except Exception as e:
-            LOG.error("TEST Error: " + str(e))
+            print("TEST Error: " + str(e))
 
 
         #Why is this check set up as a try-except?
