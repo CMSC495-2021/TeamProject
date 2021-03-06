@@ -139,7 +139,7 @@ def Authenticate():
                 KeyConditionExpression=Key('UserName').eq(username),
                 crypto_config=CryptoItems.custom_crypto_config
             )
-            print(jsonify(response))
+            print(response)
             try:
                 items = response['Items']
                 pw = items[0]['password']
