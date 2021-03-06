@@ -14,7 +14,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask.logging import create_logger
 
 # socketIO/chat imports
-from flask_socketio import SocketIO, send, emit, disconnect
+from flask_socketio import SocketIO, emit, disconnect
 
 # flask-login
 # from flask_login import LoginManager
@@ -39,14 +39,13 @@ LOG = create_logger(application)
 # crypto items
 #Try-except set up to bypass crypto issues when key is expired
 class CryptoItems:
-    aws_access_key_id = "ASIARSOHCYSCN7AHG5X2"
-    aws_secret_access_key = "qmFfarnCi7K4ON37Jux+EuUJn5hjlyrOdvzrOmY2"
-    aws_session_token = "FwoGZXIvYXdzEPv//////////wEaDNkZQxRhOvS2k8GCLCLIASjGAKe7" \
-                        "AQYzNg0VPfz5aMJdm9BVT/fEY9NoSQkjkZaCK4gciMrO6WeJ6p2Ehkexu1GKwMnlfCI9h2BB" \
-                        "wZmt65d/YZAffSt+SVrVbhm5Qhj82K0+JokaH5yD7irsJ1cHVLMe45YC5s6V5p0melYlFm0qy" \
-                        "wmoYUjRg+FTn3uK6nfT9KrlYubWL5PMx8AHI5BHr9deIuVZ6uBXTr75631WSVd9hjgFpdE+SB" \
-                        "Es58RBKai3WN6px2Qs2AdXPJ0E1PzjF0dgPVeB7sZEKOCB1YEGMi310efByoaL/P18v/s8BJQW" \
-                        "hgqHHDBQI1RXdb4k6/m6ivWe94D4cD+eNewO/ac="
+    aws_access_key_id = "ASIARSOHCYSCDYZBPDNS"
+    aws_secret_access_key = "KPRxkaS9vJAG620wrVQTJ7duPhJ0Q1iQnXZ5EGWB"
+    aws_session_token = "FwoGZXIvYXdzEAQaDKVbax1bLAi382KcuCLIAS80POdDVF2Ntlly4f7eZ5JPs8kN2AUeQ15dQm3jGJQ0Pq8AICI1Eoh" \
+                        "WP+QkBx5Qc+Ys0KeSbuvv9l26dxzXyUxUEwcMzCrW1cSS4KU9A1wgIwC/ilUl4YmJME/5dJlCvqwxgPyfrOW5YVyx5" \
+                        "9s9NEAp7ziVOG/zn7F7ODVGFlKU+rF0V74sHj5wP98UF1ZGrl4JK7HhTTUI9AaOT5e9x9ZfLKzHkZde9S4HPjwWgf" \
+                        "uNiKPXgJvQrH5mo4miEOc1vFHYYIgihG4CKNyUj4IGMi1nMbO6ABB4F7i4/sWAWMK8i7b/xySxRuLJsGoyAhw65s" \
+                        "UhQiz9/wJW5qCxUz8="
 
     dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                                 aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
