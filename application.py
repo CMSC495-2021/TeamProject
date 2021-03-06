@@ -8,7 +8,7 @@ from dynamodb_encryption_sdk.encrypted.table import EncryptedTable
 from dynamodb_encryption_sdk.identifiers import CryptoAction
 from dynamodb_encryption_sdk.material_providers.aws_kms import AwsKmsCryptographicMaterialsProvider
 from dynamodb_encryption_sdk.structures import AttributeActions, EncryptionContext
-from flask import Flask, render_template, request, redirect, url_for, flash, session, copy_current_request_context
+from flask import Flask, render_template, request, redirect, url_for, flash, session, copy_current_request_context, jsonify
 
 # logging
 from flask.logging import create_logger
@@ -139,14 +139,15 @@ def Authenticate():
                 KeyConditionExpression=Key('UserName').eq(username),
                 crypto_config=CryptoItems.custom_crypto_config
             )
-            print(response)
+            print(jsonify(response))
             try:
                 items = response['Items']
                 pw = items[0]['password']
                 try:
                     if password == pw:
                         #Load user into session for use...
-                        session['USER'] = items[0]
+                        session['USERNAME'] = items[0]['UserName']
+                        session['INITIALS'] = items[0]['UserInitials']
                         print("LOADED USER IN SESSION")
                         flash('User created!', 'Success')
                         return redirect(url_for('chatmain'))
@@ -238,8 +239,8 @@ def SubmitNewUser():
 #TODO Restrict to auth'd user
 @app.route("/chatmain", methods=["GET", "POST"])
 def chatmain():
-    username = session['USER']['UserName']
-    initials = session['USER']['UserInitials']
+    username = session['USERNAME']
+    initials = session['INITIALS']
     return render_template('chatmain.html', 
                             username = username, 
                             initials = initials,)
@@ -256,8 +257,8 @@ def broadcast_message(message):
     emit('response',
     {
         'data': message['data'],
-        'username': session['USER']['UserName'],
-        'initials': session['USER']['UserInitials']
+        'username': session['USERNAME'],
+        'initials': session['INITIALS']
     },
         broadcast=True)
 
@@ -274,8 +275,8 @@ def disconnect_request():
     emit('response',
     {
         'data': 'Disconnected!',
-        'username': session['USER']['UserName'],
-        'initials': session['USER']['UserInitials']
+        'username': session['USERNAME'],
+        'initials': session['INITIALS']
     },
     broadcast=True,
     callback=can_disconnect)
