@@ -152,23 +152,23 @@ def Authenticate():
                         flash('User created!', 'Success')
                         return redirect(url_for('chatmain'))
                     else:
-                        flash('Bad UserName/Password', 'Failed')
+                        flash('5 Bad UserName/Password', 'Failed')
                         return redirect(url_for('login'))
                 except Exception as e:
                     print("EXCEPTION: "+str(e))
-                    flash('Bad UserName/Password', 'Failed')
+                    flash('3 Bad UserName/Password', 'Failed')
                     return redirect(url_for('login'))
             except Exception as e:
                 print("EXCEPTION: "+str(e))
-                flash('Bad UserName/Password', 'Failed')
+                flash('2 Bad UserName/Password', 'Failed')
                 return redirect(url_for('login'))
             #End original call
         except Exception as e:
             print("EXCEPTION: "+str(e))
-            flash('Bad UserName/Password', 'Failed')
+            flash('1 Bad UserName/Password', 'Failed')
             return redirect(url_for('login'))
     else:
-        flash('Bad UserName/Password', 'Failed')
+        flash('4 Bad UserName/Password', 'Failed')
         return redirect(url_for('login'))
 
 
