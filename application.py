@@ -48,59 +48,29 @@ class CryptoItems:
                         "Es58RBKai3WN6px2Qs2AdXPJ0E1PzjF0dgPVeB7sZEKOCB1YEGMi310efByoaL/P18v/s8BJQW" \
                         "hgqHHDBQI1RXdb4k6/m6ivWe94D4cD+eNewO/ac="
 
-    try:
-        dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
-                                    aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
-                                    region_name='us-east-1').Table('Users')
+    dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
+                                aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
+                                region_name='us-east-1').Table('Users')
 
-        # crypto key and material provider
-        aws_cmk_id = 'arn:aws:kms:us-east-1:108328567940:key/ac31eb77-1a66-452f-9744-8aec26b9aa74'
-        aws_kms_cmp = AwsKmsCryptographicMaterialsProvider(key_id=aws_cmk_id)
+    # crypto key and material provider
+    aws_cmk_id = 'arn:aws:kms:us-east-1:108328567940:key/ac31eb77-1a66-452f-9744-8aec26b9aa74'
+    aws_kms_cmp = AwsKmsCryptographicMaterialsProvider(key_id=aws_cmk_id)
 
-        # how the crypto is applied to attributes
-        crypto_actions = AttributeActions(
-            default_action=CryptoAction.DO_NOTHING,
-            attribute_actions={
-                'password': CryptoAction.ENCRYPT_AND_SIGN})
+    # how the crypto is applied to attributes
+    crypto_actions = AttributeActions(
+        default_action=CryptoAction.DO_NOTHING,
+        attribute_actions={
+            'password': CryptoAction.ENCRYPT_AND_SIGN})
 
-        crypto_context = EncryptionContext(table_name='Users')
+    crypto_context = EncryptionContext(table_name='Users')
 
-        custom_crypto_config = CryptoConfig(materials_provider=aws_kms_cmp,
-                                            attribute_actions=crypto_actions,
-                                            encryption_context=crypto_context)
+    custom_crypto_config = CryptoConfig(materials_provider=aws_kms_cmp,
+                                        attribute_actions=crypto_actions,
+                                        encryption_context=crypto_context)
 
-        encrypted_resource = EncryptedTable(table=dbResource, materials_provider=aws_kms_cmp,
-                                            attribute_actions=crypto_actions)
-    except:
-        #FIXME TEST DB for session testing... DO NOT IMPLEMENT IN PROD!!!
-        users = {
-            "jdmoore": {
-                "username": "jdmoore",
-                "email": "jmoore249@example.com",
-                "password": "example",
-                "initials": "JD"
-            },
-            "rmedley": {
-                "username": "rmedley",
-                "email": "rmedley@example.com",
-                "password": "example",
-                "initials": "RM"
-            },
-            "dji": {
-                "username": "dji",
-                "email": "dji@example.com",
-                "password": "example",
-                "initials": "DJ"
-            },
-            "pbarz": {
-                "username": "pbarz",
-                "email": "pbarz@example.com",
-                "password": "example",
-                "initials": "PB"
-            }
-        }
-        #END TEST DB
-
+    encrypted_resource = EncryptedTable(table=dbResource, materials_provider=aws_kms_cmp,
+                                        attribute_actions=crypto_actions)
+    
 
 @app.route('/login', methods=["GET", "POST"])
 @app.route('/index', methods=["GET"])
@@ -119,17 +89,6 @@ def register():
 #TODO Restrict to auth'd user in session
 @app.route('/editProfile', methods=["GET","POST"])
 def profile():
-
-    #FIXME Remove test db for prod
-    # Get user info from test db
-    user = CryptoItems.users[session['USERNAME']]
-    userName = user['username']
-    userEmail = user['email']
-    userinitials = user['initials']
-    password = user['password']
-    passwordCheck = user['password']
-    LOG.info('userName: '+userName)
-    # End remove test db for prod
     
     #on POST update user info in DB, on error flash error and make no change  
     if request.method == "POST":
@@ -174,48 +133,29 @@ def Authenticate():
             username = str(req['username'])
             password = str(req['password'])
 
-            # FIXME Remove if/else for production
-            if CryptoItems.users:
-                # AUTH AGAINST FAKE DB USED FOR TESTING
-                if not username in CryptoItems.users:
-                    flash('Bad UserName/Password', 'Failed')
-                    return redirect(url_for('login'))
-                else:
-                    user = CryptoItems.users[username]
-
-                if not password == user["password"]:
-                    flash('Bad UserName/Password', 'Failed')
-                    return redirect(url_for('login'))
-                else:
-                    session["USERNAME"] = user["username"]
-                    session["INITIALS"] = user["initials"]
-                    return redirect(url_for('chatmain'))
-            else:
-            # END Remove if/else for production
-
-                #Original db call for user KEEP and un-indent!
-                response = CryptoItems.encrypted_resource.query(
-                    KeyConditionExpression=Key('UserName').eq(username),
-                    crypto_config=CryptoItems.custom_crypto_config
-                )
+            #Original db call for user KEEP and un-indent!
+            response = CryptoItems.encrypted_resource.query(
+                KeyConditionExpression=Key('UserName').eq(username),
+                crypto_config=CryptoItems.custom_crypto_config
+            )
+            try:
+                items = response['Items']
+                pw = items[0]['password']
                 try:
-                    items = response['Items']
-                    pw = items[0]['password']
-                    try:
-                        if password == pw:
-                            flash('User created!', 'Success')
-                            return redirect(url_for('chatmain'))
-                            #TODO Load user into session for use...
-                        else:
-                            flash('Bad UserName/Password', 'Failed')
-                            return redirect(url_for('login'))
-                    except:
+                    if password == pw:
+                        flash('User created!', 'Success')
+                        return redirect(url_for('chatmain'))
+                        #TODO Load user into session for use...
+                    else:
                         flash('Bad UserName/Password', 'Failed')
                         return redirect(url_for('login'))
                 except:
                     flash('Bad UserName/Password', 'Failed')
                     return redirect(url_for('login'))
-                #End original call
+            except:
+                flash('Bad UserName/Password', 'Failed')
+                return redirect(url_for('login'))
+            #End original call
         except:
             flash('Bad UserName/Password', 'Failed')
             return redirect(url_for('login'))
