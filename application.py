@@ -283,7 +283,7 @@ def disconnect_request():
 
 
 if __name__ == '__main__':
-    socketIO.run(app)
+    socketIO.run(app, host="0.0.0.0", port=80)
     """
     Use the following two lines to locally run the application with livereload (view changes as you make them)
     You will also need to comment out the app.run()
