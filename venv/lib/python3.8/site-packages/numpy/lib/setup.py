@@ -4,7 +4,6 @@ def configuration(parent_package='',top_path=None):
     config = Configuration('lib', parent_package, top_path)
     config.add_subpackage('tests')
     config.add_data_dir('tests/data')
-    config.add_data_files('*.pyi')
     return config
 
 if __name__ == '__main__':

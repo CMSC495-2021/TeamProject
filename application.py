@@ -39,13 +39,13 @@ LOG = create_logger(application)
 # crypto items
 #Try-except set up to bypass crypto issues when key is expired
 class CryptoItems:
-    aws_access_key_id = "ASIARSOHCYSCJJ7F5XTQ"
-    aws_secret_access_key = "Q0MbFA3TS8MjSjSz6Loa9/crOJwC+Q55kxoaHld/"
-    aws_session_token = "FwoGZXIvYXdzEAgaDHS9Y1Z3r2Nc3Bo9PiLIATx2D5SCjtAvmrZclqdJ+EhrBoQTPCfQREw" \
-                        "c/21cWyND5We6HpQDh6iQZqwx9rsQUBdFpf+UsllJZVPEwfhEK6/kGG3lBgnJSz+1U66RnzBN1TY4E1Hl48x4OOk" \
-                        "dHgvFuwL29jtBMmea5pbFlzu+Spt8UrBQ3jtxHjmEHxTdfXVGVqeUwQ4HmSWM/Ko9CqSLTcc2WslVpjfyNBLnv5CT" \
-                        "OckGCAhmPkPcPOlQX9xdpZu2BOJzU+QZfilgVG/dBHakyoVZRKgtkArPKMP5j4IGMi1Rqq5sJ/ESXRwkqPrBm3wyw" \
-                        "qiCoV+YckEfqIC3UaRcZ1fMBsBwQUAsbdMjtk="
+    aws_access_key_id = "ASIARSOHCYSCIOZ457R5"
+    aws_secret_access_key = "shdjGnQtoRI60KXa52Ht8VgwV1ZMU9IMhbpHiTqo"
+    aws_session_token = "FwoGZXIvYXdzEAgaDKL3TMZAB878j1oqxCLIAWKqXrqoXCRFpM/7Mx0IxZpoL7UmZYxlNUZiN/a1Og6BUKSa8K9ySLMq" \
+                        "CLL0oJtNQv8gfWobK6yK7ZXb9PL66Ex64pKnhQu9Wx38FiYtQEshd0E8BpN6Xxg9X9017H6tCBfTa4JCsn65taLQGC" \
+                        "ZPWidRVao4IldgnCvF9NVAlyG8NAT2Vbh/Hc5kaLUe+oQEf2RdLF1+ndQOreLL7Svck+aMI9IXSwwKkxEBVthax" \
+                        "bgjuuxgqu2CvzCS+v8pMgQhBsDOVuQqL/V9KIiMkIIGMi12/2tB8YsesfPssfpOMbUveTow4bb9RfVjXeIua7YC" \
+                        "nl3l1lWueAFDUcsfpn8="
 
     dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
                                 aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,

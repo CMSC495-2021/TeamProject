@@ -7,8 +7,11 @@ import numpy.core.fromnumeric as fromnumeric
 
 from numpy.testing import build_err_msg
 
+# Fixme: this does not look right.
+np.seterr(all='ignore')
 
 pi = np.pi
+
 
 class ModuleTester:
     def __init__(self, module):
@@ -74,7 +77,8 @@ class ModuleTester:
             if not cond:
                 msg = build_err_msg([x, y],
                                     err_msg
-                                    + f'\n(shapes {x.shape}, {y.shape} mismatch)',
+                                    + '\n(shapes %s, %s mismatch)' % (x.shape,
+                                                                      y.shape),
                                     header=header,
                                     names=('x', 'y'))
                 assert cond, msg
@@ -96,9 +100,9 @@ class ModuleTester:
                                     header=header,
                                     names=('x', 'y'))
                 assert cond, msg
-        except ValueError as e:
+        except ValueError:
             msg = build_err_msg([x, y], err_msg, header=header, names=('x', 'y'))
-            raise ValueError(msg) from e
+            raise ValueError(msg)
 
     def assert_array_equal(self, x, y, err_msg=''):
         """
@@ -108,7 +112,6 @@ class ModuleTester:
         self.assert_array_compare(self.equal, x, y, err_msg=err_msg,
                                   header='Arrays are not equal')
 
-    @np.errstate(all='ignore')
     def test_0(self):
         """
         Tests creation
@@ -119,7 +122,6 @@ class ModuleTester:
         xm = self.masked_array(x, mask=m)
         xm[0]
 
-    @np.errstate(all='ignore')
     def test_1(self):
         """
         Tests creation
@@ -147,7 +149,6 @@ class ModuleTester:
             xf.shape = s
             assert(self.count(xm) == len(m1) - reduce(lambda x, y:x+y, m1))
 
-    @np.errstate(all='ignore')
     def test_2(self):
         """
         Tests conversions and indexing.
@@ -190,7 +191,6 @@ class ModuleTester:
         m3 = self.make_mask(m, copy=1)
         assert(m is not m3)
 
-    @np.errstate(all='ignore')
     def test_3(self):
         """
         Tests resize/repeat
@@ -210,7 +210,6 @@ class ModuleTester:
         y8 = x4.repeat(2, 0)
         assert self.allequal(y5, y8)
 
-    @np.errstate(all='ignore')
     def test_4(self):
         """
         Test of take, transpose, inner, outer products.
@@ -234,7 +233,6 @@ class ModuleTester:
         assert t[1] == 2
         assert t[2] == 3
 
-    @np.errstate(all='ignore')
     def test_5(self):
         """
         Tests inplace w/ scalar
@@ -287,7 +285,6 @@ class ModuleTester:
         x += 1.
         assert self.allequal(x, y + 1.)
 
-    @np.errstate(all='ignore')
     def test_6(self):
         """
         Tests inplace w/ array
@@ -339,7 +336,6 @@ class ModuleTester:
         x /= a
         xm /= a
 
-    @np.errstate(all='ignore')
     def test_7(self):
         "Tests ufunc"
         d = (self.array([1.0, 0, -1, pi/2]*2, mask=[0, 1]+[0]*6),
@@ -374,7 +370,6 @@ class ModuleTester:
             self.assert_array_equal(ur.filled(0), mr.filled(0), f)
             self.assert_array_equal(ur._mask, mr._mask)
 
-    @np.errstate(all='ignore')
     def test_99(self):
         # test average
         ott = self.array([0., 1., 2., 3.], mask=[1, 0, 0, 0])
@@ -420,7 +415,6 @@ class ModuleTester:
         self.assert_array_equal(self.average(z, axis=1), [2.5, 5.0])
         self.assert_array_equal(self.average(z, axis=0, weights=w2), [0., 1., 99., 99., 4.0, 10.0])
 
-    @np.errstate(all='ignore')
     def test_A(self):
         x = self.arange(24)
         x[5:6] = self.masked
@@ -440,4 +434,4 @@ if __name__ == '__main__':
         cur = np.sort(cur)
         print("#%i" % i + 50*'.')
         print(eval("ModuleTester.test_%i.__doc__" % i))
-        print(f'core_current : {cur[0]:.3f} - {cur[1]:.3f}')
+        print("core_current : %.3f - %.3f" % (cur[0], cur[1]))

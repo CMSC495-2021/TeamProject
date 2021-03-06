@@ -2,8 +2,6 @@
 Test scalar buffer interface adheres to PEP 3118
 """
 import numpy as np
-from numpy.core._rational_tests import rational
-from numpy.core._multiarray_tests import get_buffer_info
 import pytest
 
 from numpy.testing import assert_, assert_equal, assert_raises
@@ -53,20 +51,10 @@ class TestScalarPEP3118:
         assert_equal(mv_x.suboffsets, ())
 
     @pytest.mark.parametrize('scalar, code', scalars_and_codes, ids=codes_only)
-    def test_scalar_code_and_properties(self, scalar, code):
+    def test_scalar_known_code(self, scalar, code):
         x = scalar()
-        expected = dict(strides=(), itemsize=x.dtype.itemsize, ndim=0,
-                        shape=(), format=code, readonly=True)
-
         mv_x = memoryview(x)
-        print(mv_x.readonly, self._as_dict(mv_x))
-        assert self._as_dict(mv_x) == expected
-
-    @pytest.mark.parametrize('scalar', scalars_only, ids=codes_only)
-    def test_scalar_buffers_readonly(self, scalar):
-        x = scalar()
-        with pytest.raises(BufferError, match="scalar buffer is readonly"):
-            get_buffer_info(x, ["WRITABLE"])
+        assert_equal(mv_x.format, code)
 
     def test_void_scalar_structured_data(self):
         dt = np.dtype([('name', np.unicode_, 16), ('grades', np.float64, (2,))])
@@ -88,14 +76,9 @@ class TestScalarPEP3118:
         assert_equal(mv_x.itemsize, mv_a.itemsize)
         assert_equal(mv_x.format, mv_a.format)
 
-        # Check that we do not allow writeable buffer export (technically
-        # we could allow it sometimes here...)
-        with pytest.raises(BufferError, match="scalar buffer is readonly"):
-            get_buffer_info(x, ["WRITABLE"])
-
     def _as_dict(self, m):
         return dict(strides=m.strides, shape=m.shape, itemsize=m.itemsize,
-                    ndim=m.ndim, format=m.format, readonly=m.readonly)
+                    ndim=m.ndim, format=m.format)
 
     def test_datetime_memoryview(self):
         # gh-11656
@@ -104,7 +87,7 @@ class TestScalarPEP3118:
         dt1 = np.datetime64('2016-01-01')
         dt2 = np.datetime64('2017-01-01')
         expected = dict(strides=(1,), itemsize=1, ndim=1, shape=(8,),
-                        format='B', readonly=True)
+                        format='B')
         v = memoryview(dt1)
         assert self._as_dict(v) == expected
 
@@ -116,10 +99,6 @@ class TestScalarPEP3118:
         # Fails to create a PEP 3118 valid buffer
         assert_raises((ValueError, BufferError), memoryview, a[0])
 
-        # Check that we do not allow writeable buffer export
-        with pytest.raises(BufferError, match="scalar buffer is readonly"):
-            get_buffer_info(dt1, ["WRITABLE"])
-
     @pytest.mark.parametrize('s', [
         pytest.param("\x32\x32", id="ascii"),
         pytest.param("\uFE0F\uFE0F", id="basic multilingual"),
@@ -129,8 +108,7 @@ class TestScalarPEP3118:
         s = np.str_(s)  # only our subclass implements the buffer protocol
 
         # all the same, characters always encode as ucs4
-        expected = dict(strides=(), itemsize=8, ndim=0, shape=(), format='2w',
-                        readonly=True)
+        expected = dict(strides=(), itemsize=8, ndim=0, shape=(), format='2w')
 
         v = memoryview(s)
         assert self._as_dict(v) == expected
@@ -139,16 +117,3 @@ class TestScalarPEP3118:
         code_points = np.frombuffer(v, dtype='i4')
 
         assert_equal(code_points, [ord(c) for c in s])
-
-        # Check that we do not allow writeable buffer export
-        with pytest.raises(BufferError, match="scalar buffer is readonly"):
-            get_buffer_info(s, ["WRITABLE"])
-
-    def test_user_scalar_fails_buffer(self):
-        r = rational(1)
-        with assert_raises(TypeError):
-            memoryview(r)
-
-        # Check that we do not allow writeable buffer export
-        with pytest.raises(BufferError, match="scalar buffer is readonly"):
-            get_buffer_info(r, ["WRITABLE"])

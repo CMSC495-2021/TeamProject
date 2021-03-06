@@ -233,20 +233,20 @@ class NoseTester:
         nose = import_nose()
 
         import numpy
-        print(f'NumPy version {numpy.__version__}')
+        print("NumPy version %s" % numpy.__version__)
         relaxed_strides = numpy.ones((10, 1), order="C").flags.f_contiguous
         print("NumPy relaxed strides checking option:", relaxed_strides)
         npdir = os.path.dirname(numpy.__file__)
-        print(f'NumPy is installed in {npdir}')
+        print("NumPy is installed in %s" % npdir)
 
         if 'scipy' in self.package_name:
             import scipy
-            print(f'SciPy version {scipy.__version__}')
+            print("SciPy version %s" % scipy.__version__)
             spdir = os.path.dirname(scipy.__file__)
-            print(f'SciPy is installed in {spdir}')
+            print("SciPy is installed in %s" % spdir)
 
         pyversion = sys.version.replace('\n', '')
-        print(f'Python version {pyversion}')
+        print("Python version %s" % pyversion)
         print("nose version %d.%d.%d" % nose.__versioninfo__)
 
     def _get_custom_doctester(self):
@@ -278,7 +278,7 @@ class NoseTester:
         argv = self._test_argv(label, verbose, extra_argv)
         # our way of doing coverage
         if coverage:
-            argv += [f'--cover-package={self.package_name}', '--with-coverage',
+            argv += ['--cover-package=%s' % self.package_name, '--with-coverage',
                    '--cover-tests', '--cover-erase']
 
         if timer:
@@ -352,7 +352,7 @@ class NoseTester:
         coverage : bool, optional
             If True, report coverage of NumPy code. Default is False.
             (This requires the
-            `coverage module <https://pypi.org/project/coverage/>`_).
+            `coverage module <https://nedbatchelder.com/code/modules/coveragehtml>`_).
         raise_warnings : None, str or sequence of warnings, optional
             This specifies which warnings to configure as 'raise' instead
             of being shown once during the test execution. Valid strings are:
@@ -403,9 +403,9 @@ class NoseTester:
                 label, verbose, extra_argv, doctests, coverage, timer)
 
         if doctests:
-            print(f'Running unit tests and doctests for {self.package_name}')
+            print("Running unit tests and doctests for %s" % self.package_name)
         else:
-            print(f'Running unit tests for {self.package_name}')
+            print("Running unit tests for %s" % self.package_name)
 
         self._show_system_info()
 
@@ -520,7 +520,7 @@ class NoseTester:
 
         """
 
-        print(f'Running benchmarks for {self.package_name}')
+        print("Running benchmarks for %s" % self.package_name)
         self._show_system_info()
 
         argv = self._test_argv(label, verbose, extra_argv)

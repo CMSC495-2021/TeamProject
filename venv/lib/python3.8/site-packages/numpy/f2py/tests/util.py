@@ -19,6 +19,8 @@ from numpy.compat import asbytes, asstr
 from numpy.testing import temppath
 from importlib import import_module
 
+from hashlib import md5
+
 #
 # Maintaining a temporary module directory
 #
