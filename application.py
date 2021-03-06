@@ -130,10 +130,10 @@ def profile():
 def Authenticate():
     if request.method == "POST":
         try:
-            req = request.form
-            username = str(req['username'])
-            password = str(req['password'])
-
+            # req = request.form
+            username = str(request.form['username'])
+            password = str(request.form['password'])
+            LOG.info(username+","+password)
             #Original db call for user KEEP and un-indent!
             response = CryptoItems.encrypted_resource.query(
                 KeyConditionExpression=Key('UserName').eq(username),
@@ -146,6 +146,7 @@ def Authenticate():
                     if password == pw:
                         #Load user into session for use...
                         session['USER'] = items[0]
+                        LOG.info("LOADED USER IN SESSION")
                         flash('User created!', 'Success')
                         return redirect(url_for('chatmain'))
                     else:
@@ -176,9 +177,12 @@ def SubmitNewUser():
         password = str(req['password'])
         passwordCheck = str(req['passwordCheck'])
         dateCreated = str(datetime.now().isoformat())
-
-        count = CryptoItems.encrypted_resource.scan(crypto_config=CryptoItems.custom_crypto_config)
-        userID = int(len(count['Items']) + 1)
+        
+        try:
+            count = CryptoItems.encrypted_resource.scan(crypto_config=CryptoItems.custom_crypto_config)
+            userID = int(len(count['Items']) + 1)
+        except Exception as e:
+            LOG.error("TEST Error: " +e)
 
 
         #Why is this check set up as a try-except?
