@@ -145,9 +145,10 @@ def Authenticate():
                 pw = items[0]['password']
                 try:
                     if password == pw:
+                        #Load user into session for use...
+                        session['USER'] = items[0]
                         flash('User created!', 'Success')
                         return redirect(url_for('chatmain'))
-                        #TODO Load user into session for use...
                     else:
                         flash('Bad UserName/Password', 'Failed')
                         return redirect(url_for('login'))
@@ -161,7 +162,6 @@ def Authenticate():
         except:
             flash('Bad UserName/Password', 'Failed')
             return redirect(url_for('login'))
-
     else:
         flash('Bad UserName/Password', 'Failed')
         return redirect(url_for('login'))
@@ -231,8 +231,8 @@ def SubmitNewUser():
 #TODO Restrict to auth'd user
 @app.route("/chatmain", methods=["GET", "POST"])
 def chatmain():
-    username = session['USERNAME']
-    initials = session['INITIALS']
+    username = session['USER']['UserName']
+    initials = session['USER']['UserInitials']
     return render_template('chatmain.html', 
                             username = username, 
                             initials = initials,)
@@ -249,8 +249,8 @@ def broadcast_message(message):
     emit('response',
     {
         'data': message['data'],
-        'username': session['USERNAME'],
-        'initials': session['INITIALS']
+        'username': session['USER']['UserName'],
+        'initials': session['USER']['UserInitials']
     },
         broadcast=True)
 
@@ -267,8 +267,8 @@ def disconnect_request():
     emit('response',
     {
         'data': 'Disconnected!',
-        'username': session['USERNAME'],
-        'initials': session['INITIALS']
+        'username': session['USER']['UserName'],
+        'initials': session['USER']['UserInitials']
     },
     broadcast=True,
     callback=can_disconnect)
