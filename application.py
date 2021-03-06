@@ -133,12 +133,13 @@ def Authenticate():
             # req = request.form
             username = str(request.form['username'])
             password = str(request.form['password'])
-            LOG.info(username+","+password)
+            print("USER ENTERED: "+sername+","+password)
             #Original db call for user KEEP and un-indent!
             response = CryptoItems.encrypted_resource.query(
                 KeyConditionExpression=Key('UserName').eq(username),
                 crypto_config=CryptoItems.custom_crypto_config
             )
+            print(repsonse)
             try:
                 items = response['Items']
                 pw = items[0]['password']
@@ -146,20 +147,23 @@ def Authenticate():
                     if password == pw:
                         #Load user into session for use...
                         session['USER'] = items[0]
-                        LOG.info("LOADED USER IN SESSION")
+                        print("LOADED USER IN SESSION")
                         flash('User created!', 'Success')
                         return redirect(url_for('chatmain'))
                     else:
                         flash('Bad UserName/Password', 'Failed')
                         return redirect(url_for('login'))
-                except:
+                except Exception as e:
+                    print("EXPECTION: "+e)
                     flash('Bad UserName/Password', 'Failed')
                     return redirect(url_for('login'))
-            except:
+            except Exception as e:
+                print("EXPECTION: "+e)
                 flash('Bad UserName/Password', 'Failed')
                 return redirect(url_for('login'))
             #End original call
-        except:
+        except Exception as e:
+            print("EXPECTION: "+e)
             flash('Bad UserName/Password', 'Failed')
             return redirect(url_for('login'))
     else:
