@@ -33,7 +33,7 @@ jmespath==0.10.0
 jsonschema==3.2.0
 MarkupSafe==1.1.1
 now==0.0.6
-numpy==1.20.0
+numpy==1.19.5
 paramiko==2.7.2
 pathspec==0.5.9
 pycparser==2.20
