@@ -141,22 +141,22 @@ def profile():
         passwordCheck = str(req['passwordCheck'])
         dateUpdated = str(datetime.now().isoformat())
         
-        try:
-            #FIXME This was C/P from submit user and is likely the wrong call
-            #but I instered it anyway to clear 'no try' error
-            CryptoItems.encrypted_resource.put_item(
-                TableName='Users',
-                Item={'UserName': userName,
-                        'UserID': userID,
-                        'UserInitials': userInitials,
-                        'DateCreated': dateCreated,
-                        'UserEmail': userEmail,
-                        'password': password
-                        },
-                crypto_config=CryptoItems.custom_crypto_config)
-        except:
-            flash('unable to save user info', 'Failed')
-            return redirect(url_for('profile'))
+        # try:
+        #     #FIXME This was C/P from submit user and is likely the wrong call
+        #     #but I instered it anyway to clear 'no try' error
+        #     CryptoItems.encrypted_resource.put_item(
+        #         TableName='Users',
+        #         Item={'UserName': userName,
+        #                 'UserID': userID,
+        #                 'UserInitials': userInitials,
+        #                 'DateCreated': dateCreated,
+        #                 'UserEmail': userEmail,
+        #                 'password': password
+        #                 },
+        #         crypto_config=CryptoItems.custom_crypto_config)
+        # except:
+        #     flash('unable to save user info', 'Failed')
+        #     return redirect(url_for('profile'))
         
         #TODO Re-load session with new user object
         return render_template("profile.html",
