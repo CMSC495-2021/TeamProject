@@ -149,7 +149,6 @@ def Authenticate():
                         session['USERNAME'] = items[0]['UserName']
                         session['INITIALS'] = items[0]['UserInitials']
                         print("LOADED USER IN SESSION")
-                        flash('User created!', 'Success')
                         return redirect(url_for('chatmain'))
                     else:
                         flash('Bad UserName/Password', 'Failed')
