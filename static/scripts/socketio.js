@@ -27,7 +27,7 @@ $(document).ready(function() {
             li.innerText = msg.username;
             document.getElementById('usersOnline').appendChild(li);
         }
-        document.getElementById('chat-view').scrollTo(0,document.body.scrollHeight);
+        document.getElementById('chat-view').scrollTo(0,document.getElementById('chat-view').scrollHeight);
         if (cb)
             cb();
     });
