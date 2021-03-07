@@ -16,44 +16,28 @@ from flask.logging import create_logger
 # socketIO/chat imports
 from flask_socketio import SocketIO, emit, disconnect
 
-# flask-login
-# from flask_login import LoginManager
-
-# from models import User
-
-# from livereload import Server commented this out so my IDE doesn't freak out. -DJ
-
 application = app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.secret_key = 'test_key'
 
 # SocketIO Initialization
 socketIO = SocketIO(app)
 
-# flask login
-# login = LoginManager(app)
-# login.init_app(app)
-
 # logging setup
 LOG = create_logger(application)
 
 
 # crypto items
-# Try-except set up to bypass crypto issues when key is expired
 class CryptoItems:
-    aws_access_key_id = "ASIARSOHCYSCIOZ457R5"
-    aws_secret_access_key = "shdjGnQtoRI60KXa52Ht8VgwV1ZMU9IMhbpHiTqo"
-    aws_session_token = "FwoGZXIvYXdzEAgaDKL3TMZAB878j1oqxCLIAWKqXrqoXCRFpM/7Mx0IxZpoL7UmZYxlNUZiN/a1Og6BUKSa8K9ySLMq" \
-                        "CLL0oJtNQv8gfWobK6yK7ZXb9PL66Ex64pKnhQu9Wx38FiYtQEshd0E8BpN6Xxg9X9017H6tCBfTa4JCsn65taLQGC" \
-                        "ZPWidRVao4IldgnCvF9NVAlyG8NAT2Vbh/Hc5kaLUe+oQEf2RdLF1+ndQOreLL7Svck+aMI9IXSwwKkxEBVthax" \
-                        "bgjuuxgqu2CvzCS+v8pMgQhBsDOVuQqL/V9KIiMkIIGMi12/2tB8YsesfPssfpOMbUveTow4bb9RfVjXeIua7YC" \
-                        "nl3l1lWueAFDUcsfpn8="
+    with open('aws') as v:
+        aws_access_key_id = str(v.readline().strip())
+        aws_secret_access_key = str(v.readline().strip())
 
     dbResource = boto3.resource('dynamodb', aws_access_key_id=aws_access_key_id,
-                                aws_secret_access_key=aws_secret_access_key, aws_session_token=aws_session_token,
+                                aws_secret_access_key=aws_secret_access_key,
                                 region_name='us-east-1').Table('Users')
 
     # crypto key and material provider
-    aws_cmk_id = 'arn:aws:kms:us-east-1:108328567940:key/ac31eb77-1a66-452f-9744-8aec26b9aa74'
+    aws_cmk_id = 'arn:aws:kms:us-east-1:910140038075:key/353f6f4c-0d0b-47b1-99fc-3aeec929b973'
     aws_kms_cmp = AwsKmsCryptographicMaterialsProvider(key_id=aws_cmk_id)
 
     # how the crypto is applied to attributes
@@ -76,16 +60,9 @@ class CryptoItems:
 @app.route('/index', methods=["GET"])
 @app.route('/', methods=["GET", "POST"])
 def login():
-    # FIXME Remove if else
-    # if not CryptoItems.users:
-    # KEEP THIS LINE AND UN-INDENT
     return render_template("login.html")
 
 
-# else:
-#     flash('Temporary DB in use', 'Failed')
-#     return render_template("login.html")
-# End Remove if-else
 @app.route('/register', methods=["POST", "GET"])
 def register():
     return render_template('register.html')
@@ -102,24 +79,6 @@ def profile():
         password = str(req['password'])
         userInitials = str(req['userInitials'])
         passwordCheck = str(req['passwordCheck'])
-        dateUpdated = str(datetime.now().isoformat())
-
-        # try:
-        #     #FIXME This was C/P from submit user and is likely the wrong call
-        #     #but I instered it anyway to clear 'no try' error
-        #     CryptoItems.encrypted_resource.put_item(
-        #         TableName='Users',
-        #         Item={'UserName': userName,
-        #                 'UserID': userID,
-        #                 'UserInitials': userInitials,
-        #                 'DateCreated': dateCreated,
-        #                 'UserEmail': userEmail,
-        #                 'password': password
-        #                 },
-        #         crypto_config=CryptoItems.custom_crypto_config)
-        # except:
-        #     flash('unable to save user info', 'Failed')
-        #     return redirect(url_for('profile'))
 
         # TODO Re-load session with new user object
         return render_template("profile.html",
@@ -192,10 +151,6 @@ def SubmitNewUser():
         except Exception as e:
             print("TEST Error: " + str(e))
 
-        # Why is this check set up as a try-except?
-        # How does the password check fire if the username
-        # check succeeds and skips the except?
-        # Haven't actually tested since keys required for DB
         try:
             response = CryptoItems.encrypted_resource.query(
                 KeyConditionExpression=Key('UserName').eq(userName),
@@ -205,7 +160,6 @@ def SubmitNewUser():
             items = response['Items']
             uniqueUser = items[0]['UserName']
 
-            # Same question here about wrapping the if in a try-except...
             try:
                 if uniqueUser == userName:
                     flash('User Already Exists!', 'Failed')
@@ -249,12 +203,6 @@ def chatmain():
                            initials=initials, )
 
 
-# SocketIO Event Handler template
-# @socketIO.on('message')
-# def message(data):
-#     send(data)
-#     emit('some-event', 'EVENT TEST')
-
 # Broadcast message to all conencted sockets
 @socketIO.on('broadcast_event', namespace='/chatmain')
 def broadcast_message(message):
@@ -290,10 +238,3 @@ def disconnect_request():
 
 if __name__ == '__main__':
     socketIO.run(app, host="0.0.0.0", port=80)
-    """
-    Use the following two lines to locally run the application with livereload (view changes as you make them)
-    You will also need to comment out the app.run()
-    
-    server = Server(app.wsgi_app)
-    server.serve()
-    """
