@@ -4,6 +4,7 @@ $(document).ready(function() {
     // Set the namespace in case we want to have multiples
     namespace = '/chatmain';
     var socket = io(namespace);
+    var usersOnline = [];
 
     // Sends the connection event to show logon in chat
     // Can this be used for status?
@@ -19,6 +20,14 @@ $(document).ready(function() {
         else{
             $('#chat-view').append('<br><div class="message received"><span class="avatar">'+msg.initials+'</span><p>'+msg.data+'</p></div>');
         }
+        if(usersOnline.indexOf(msg.username) == -1){
+            usersOnline.push(msg.username);
+            var li = document.createElement('li');
+            li.className = "online";
+            li.innerText = msg.username;
+            document.getElementById('usersOnline').appendChild(li);
+        }
+        document.getElementById('chat-view').scrollTo(0,document.body.scrollHeight);
         if (cb)
             cb();
     });
