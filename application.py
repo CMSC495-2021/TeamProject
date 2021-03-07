@@ -30,14 +30,15 @@ app.secret_key = 'test_key'
 socketIO = SocketIO(app)
 
 # flask login
-#login = LoginManager(app)
-#login.init_app(app)
+# login = LoginManager(app)
+# login.init_app(app)
 
 # logging setup
 LOG = create_logger(application)
 
+
 # crypto items
-#Try-except set up to bypass crypto issues when key is expired
+# Try-except set up to bypass crypto issues when key is expired
 class CryptoItems:
     aws_access_key_id = "ASIARSOHCYSCIOZ457R5"
     aws_secret_access_key = "shdjGnQtoRI60KXa52Ht8VgwV1ZMU9IMhbpHiTqo"
@@ -69,29 +70,31 @@ class CryptoItems:
 
     encrypted_resource = EncryptedTable(table=dbResource, materials_provider=aws_kms_cmp,
                                         attribute_actions=crypto_actions)
-    
+
 
 @app.route('/login', methods=["GET", "POST"])
 @app.route('/index', methods=["GET"])
 @app.route('/', methods=["GET", "POST"])
 def login():
-    #FIXME Remove if else
+    # FIXME Remove if else
     # if not CryptoItems.users:
-        #KEEP THIS LINE AND UN-INDENT
-        return render_template("login.html")
-    # else:
-    #     flash('Temporary DB in use', 'Failed')
-    #     return render_template("login.html")
-    #End Remove if-else
+    # KEEP THIS LINE AND UN-INDENT
+    return render_template("login.html")
+
+
+# else:
+#     flash('Temporary DB in use', 'Failed')
+#     return render_template("login.html")
+# End Remove if-else
 @app.route('/register', methods=["POST", "GET"])
 def register():
     return render_template('register.html')
 
-#TODO Restrict to auth'd user in session
-@app.route('/editProfile', methods=["GET","POST"])
+
+# TODO Restrict to auth'd user in session
+@app.route('/editProfile', methods=["GET", "POST"])
 def profile():
-    
-    #on POST update user info in DB, on error flash error and make no change  
+    # on POST update user info in DB, on error flash error and make no change
     if request.method == "POST":
         req = request.form
         userName = str(req['userName'])
@@ -100,7 +103,7 @@ def profile():
         userInitials = str(req['userInitials'])
         passwordCheck = str(req['passwordCheck'])
         dateUpdated = str(datetime.now().isoformat())
-        
+
         # try:
         #     #FIXME This was C/P from submit user and is likely the wrong call
         #     #but I instered it anyway to clear 'no try' error
@@ -117,15 +120,16 @@ def profile():
         # except:
         #     flash('unable to save user info', 'Failed')
         #     return redirect(url_for('profile'))
-        
-        #TODO Re-load session with new user object
+
+        # TODO Re-load session with new user object
         return render_template("profile.html",
-                                userName = userName,
-                                userEmail = userEmail,
-                                userInitials = userInitials,
-                                password = password,
-                                passwordCheck = passwordCheck)
-        
+                               userName=userName,
+                               userEmail=userEmail,
+                               userInitials=userInitials,
+                               password=password,
+                               passwordCheck=passwordCheck)
+
+
 @app.route('/Authenticate', methods=["POST", "GET"])
 def Authenticate():
     if request.method == "POST":
@@ -133,19 +137,19 @@ def Authenticate():
             # req = request.form
             username = str(request.form['username'])
             password = str(request.form['password'])
-            print("USER ENTERED: "+username+","+password)
-            #Original db call for user KEEP and un-indent!
+
+            # Original db call for user KEEP and un-indent!
             response = CryptoItems.encrypted_resource.query(
                 KeyConditionExpression=Key('UserName').eq(username),
                 crypto_config=CryptoItems.custom_crypto_config
             )
-            print(response)
+
             try:
                 items = response['Items']
                 pw = items[0]['password']
                 try:
                     if password == pw:
-                        #Load user into session for use...
+                        # Load user into session for use...
                         session['USERNAME'] = items[0]['UserName']
                         session['INITIALS'] = items[0]['UserInitials']
                         print("LOADED USER IN SESSION")
@@ -154,16 +158,16 @@ def Authenticate():
                         flash('Bad UserName/Password', 'Failed')
                         return redirect(url_for('login'))
                 except Exception as e:
-                    print("EXCEPTION: "+str(e))
+                    print("EXCEPTION: " + str(e))
                     flash('Bad UserName/Password', 'Failed')
                     return redirect(url_for('login'))
             except Exception as e:
-                print("EXCEPTION: "+str(e))
+                print("EXCEPTION: " + str(e))
                 flash('Bad UserName/Password', 'Failed')
                 return redirect(url_for('login'))
-            #End original call
+            # End original call
         except Exception as e:
-            print("EXCEPTION: "+str(e))
+            print("EXCEPTION: " + str(e))
             flash('Bad UserName/Password', 'Failed')
             return redirect(url_for('login'))
     else:
@@ -181,18 +185,17 @@ def SubmitNewUser():
         password = str(req['password'])
         passwordCheck = str(req['passwordCheck'])
         dateCreated = str(datetime.now().isoformat())
-        
+
         try:
             count = CryptoItems.encrypted_resource.scan(crypto_config=CryptoItems.custom_crypto_config)
             userID = int(len(count['Items']) + 1)
         except Exception as e:
             print("TEST Error: " + str(e))
 
-
-        #Why is this check set up as a try-except?
-        #How does the password check fire if the username
-        #check succeeds and skips the except?
-        #Haven't actually tested since keys required for DB
+        # Why is this check set up as a try-except?
+        # How does the password check fire if the username
+        # check succeeds and skips the except?
+        # Haven't actually tested since keys required for DB
         try:
             response = CryptoItems.encrypted_resource.query(
                 KeyConditionExpression=Key('UserName').eq(userName),
@@ -202,7 +205,7 @@ def SubmitNewUser():
             items = response['Items']
             uniqueUser = items[0]['UserName']
 
-            #Same question here about wrapping the if in a try-except...
+            # Same question here about wrapping the if in a try-except...
             try:
                 if uniqueUser == userName:
                     flash('User Already Exists!', 'Failed')
@@ -233,16 +236,18 @@ def SubmitNewUser():
                 flash('Passwords Do Not Match!', 'Failed')
                 return redirect(url_for('register'))
 
-#Added basic session info for use in template
-#May need to build out based on feedback
-#TODO Restrict to auth'd user
+
+# Added basic session info for use in template
+# May need to build out based on feedback
+# TODO Restrict to auth'd user
 @app.route("/chatmain", methods=["GET", "POST"])
 def chatmain():
     username = session['USERNAME']
     initials = session['INITIALS']
-    return render_template('chatmain.html', 
-                            username = username, 
-                            initials = initials,)
+    return render_template('chatmain.html',
+                           username=username,
+                           initials=initials, )
+
 
 # SocketIO Event Handler template
 # @socketIO.on('message')
@@ -254,31 +259,33 @@ def chatmain():
 @socketIO.on('broadcast_event', namespace='/chatmain')
 def broadcast_message(message):
     emit('response',
-    {
-        'data': message['data'],
-        'username': session['USERNAME'],
-        'initials': session['INITIALS']
-    },
-        broadcast=True)
+         {
+             'data': message['data'],
+             'username': session['USERNAME'],
+             'initials': session['INITIALS']
+         },
+         broadcast=True)
 
-#TODO Use for logoff?
-#FIXME This isn't working yet for some reason it immediately reconnects
-#probably need to investigate the disconnect method or tie the req
-#to the app's user session kill...
-#Maybe look into flask_login as well
+
+# TODO Use for logoff?
+# FIXME This isn't working yet for some reason it immediately reconnects
+# probably need to investigate the disconnect method or tie the req
+# to the app's user session kill...
+# Maybe look into flask_login as well
 @socketIO.on('disconnect_event', namespace='/chatmain')
 def disconnect_request():
     @copy_current_request_context
     def can_disconnect():
         disconnect()
+
     emit('response',
-    {
-        'data': 'Disconnected!',
-        'username': session['USERNAME'],
-        'initials': session['INITIALS']
-    },
-    broadcast=True,
-    callback=can_disconnect)
+         {
+             'data': 'Disconnected!',
+             'username': session['USERNAME'],
+             'initials': session['INITIALS']
+         },
+         broadcast=True,
+         callback=can_disconnect)
 
 
 if __name__ == '__main__':
