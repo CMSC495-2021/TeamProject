@@ -68,25 +68,24 @@ def register():
     return render_template('register.html')
 
 
-# TODO Restrict to auth'd user in session
-@app.route('/editProfile', methods=["GET", "POST"])
-def profile():
-    # on POST update user info in DB, on error flash error and make no change
-    if request.method == "POST":
-        req = request.form
-        userName = str(req['userName'])
-        userEmail = str(req['userEmail'])
-        password = str(req['password'])
-        userInitials = str(req['userInitials'])
-        passwordCheck = str(req['passwordCheck'])
+# # TODO Comment out first, then remove after testing
+# @app.route('/editProfile', methods=["GET", "POST"])
+# def profile():
+#     # on POST update user info in DB, on error flash error and make no change
+#     if request.method == "POST":
+#         req = request.form
+#         userName = str(req['userName'])
+#         userEmail = str(req['userEmail'])
+#         password = str(req['password'])
+#         userInitials = str(req['userInitials'])
+#         passwordCheck = str(req['passwordCheck'])
 
-        # TODO Re-load session with new user object
-        return render_template("profile.html",
-                               userName=userName,
-                               userEmail=userEmail,
-                               userInitials=userInitials,
-                               password=password,
-                               passwordCheck=passwordCheck)
+#         return render_template("profile.html",
+#                                userName=userName,
+#                                userEmail=userEmail,
+#                                userInitials=userInitials,
+#                                password=password,
+#                                passwordCheck=passwordCheck)
 
 
 @app.route('/Authenticate', methods=["POST", "GET"])
@@ -193,7 +192,6 @@ def SubmitNewUser():
 
 # Added basic session info for use in template
 # May need to build out based on feedback
-# TODO Restrict to auth'd user
 @app.route("/chatmain", methods=["GET", "POST"])
 def chatmain():
     username = session['USERNAME']
@@ -214,18 +212,11 @@ def broadcast_message(message):
          },
          broadcast=True)
 
-
-# TODO Use for logoff?
-# FIXME This isn't working yet for some reason it immediately reconnects
-# probably need to investigate the disconnect method or tie the req
-# to the app's user session kill...
-# Maybe look into flask_login as well
 @socketIO.on('disconnect_event', namespace='/chatmain')
 def disconnect_request():
     @copy_current_request_context
     def can_disconnect():
         disconnect()
-
     emit('response',
          {
              'data': 'Disconnected!',

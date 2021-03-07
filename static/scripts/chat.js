@@ -19,16 +19,6 @@ function init(){
             menuOpen = false;
         }
     });
-    document.getElementById("editProfile").addEventListener("click", function() {
-        //when clicking on the edit profile link, take the user to the edit profile page
-        window.location.href = "/editProfile";
-    });
-
-    // Commented to move to socketIO jquery on page loaded
-    // document.getElementById("logout").addEventListener("click", function() {
-    //     //logout functionality should go here. For now, it just redirects to the login page
-    //     window.location.href = '/login';
-    // });
 }
 document.addEventListener('readystatechange', function() {
     if (document.readyState === "complete") {
